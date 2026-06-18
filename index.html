@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoloStack - All-in-One AI SaaS Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f13;
+            --bg-secondary: #17171d;
+            --bg-card: #1e1e26;
+            --bg-input: #252530;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --accent-glow: rgba(99, 102, 241, 0.2);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            background: var(--bg-card);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: var(--accent-glow);
+            color: var(--accent);
+        }
+
+        .nav-item .icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            background: var(--accent);
+            border-radius: 100px;
+            color: white;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-input);
+        }
+
+        /* Cards Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .tool-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-card p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .tool-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .tool-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Tool Panel */
+        .tool-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tool-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .panel-grid { grid-template-columns: 1fr; }
+        }
+
+        .panel-input {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .panel-output {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: sticky;
+            top: 2rem;
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-header h2 {
+            font-size: 1.1rem;
+        }
+
+        .panel-header .count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-input);
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--accent);
+        }
+
+        .checkbox-item input {
+            width: auto;
+            accent-color: var(--accent);
+        }
+
+        /* Output Area */
+        .output-content {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            color: var(--text-secondary);
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Results */
+        .result-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .result-card .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-card .title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .result-card .meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .result-card .body {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 0.75rem;
+            background: var(--bg-input);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .quick-action {
+            padding: 0.4rem 0.75rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .quick-action:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: var(--accent-glow);
+            color: var(--accent);
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .tag.success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .tag.warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--success);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Loader */
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .mobile-nav {
+                display: flex;
+            }
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 0.75rem;
+            justify-content: space-around;
+            z-index: 100;
+        }
+
+        .mobile-nav .nav-item {
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            font-size: 0.7rem;
+        }
+
+        /* Invoice List */
+        .invoice-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .invoice-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--bg-input);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .invoice-item .info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .invoice-item .client {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .invoice-item .amount {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Action Items List */
+        .action-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-input);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-item .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .action-item .checkbox:hover {
+            border-color: var(--accent);
+        }
+
+        .action-item.done .checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .action-item.done .checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 0.75rem;
+        }
+
+        .action-item .content {
+            flex: 1;
+        }
+
+        .action-item .task {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .action-item.done .task {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .action-item .meta {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Job Board */
+        .job-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .job-card .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-card .job-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .job-card .job-company {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .job-card .job-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Proposal Preview */
+        .proposal-preview {
+            background: white;
+            color: #1a1a1a;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .proposal-preview h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .proposal-preview .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .proposal-preview .section {
+            margin-bottom: 1.5rem;
+        }
+
+        .proposal-preview .section h2 {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .proposal-preview ul {
+            margin-left: 1.5rem;
+        }
+
+        .proposal-preview li {
+            margin-bottom: 0.25rem;
+        }
+
+        .proposal-preview .price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Portal Preview */
+        .portal-preview {
+            background: var(--bg-input);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .portal-preview .portal-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0.75rem;
+        }
+
+        .portal-preview .portal-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border-radius: 6px;
+        }
+
+        .portal-preview .portal-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .portal-preview .portal-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .portal-preview .nav-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .portal-preview .portal-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .portal-preview .widget {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .portal-preview .widget h4 {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .portal-preview .widget .value {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <span class="logo-text">SoloStack</span>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-label">Dashboard</div>
+                <div class="nav-item active" onclick="showTool(null)">
+                    <span class="icon">🏠</span>
+                    <span>Overview</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-label">Content Tools</div>
+                <div class="nav-item" onclick="showTool('seo')">
+                    <span class="icon">📊</span>
+                    <span>SEO Brief Builder</span>
+                </div>
+                <div class="nav-item" onclick="showTool('proposal')">
+                    <span class="icon">✍️</span>
+                    <span>Proposal Generator</span>
+                </div>
+                <div class="nav-item" onclick="showTool('jobs')">
+                    <span class="icon">💼</span>
+                    <span>Job Board</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-label">Business Tools</div>
+                <div class="nav-item" onclick="showTool('invoice')">
+                    <span class="icon">💰</span>
+                    <span>Invoice Nudger</span>
+                </div>
+                <div class="nav-item" onclick="showTool('payments')">
+                    <span class="icon">🔄</span>
+                    <span>Payment Recovery</span>
+                </div>
+                <div class="nav-item" onclick="showTool('portal')">
+                    <span class="icon">📁</span>
+                    <span>Client Portal</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-label">Productivity</div>
+                <div class="nav-item" onclick="showTool('meetings')">
+                    <span class="icon">📝</span>
+                    <span>Meeting Notes</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Overview -->
+            <div id="overview-panel" class="tool-panel active">
+                <div class="header">
+                    <div>
+                        <h1>Welcome to SoloStack</h1>
+                        <p>All-in-one AI SaaS builder for solo founders</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary">📥 Export All</button>
+                        <button class="btn btn-primary">➕ New Project</button>
+                    </div>
+                </div>
+
+                <div class="tools-grid">
+                    <div class="tool-card" onclick="showTool('seo')">
+                        <div class="icon" style="background: rgba(99, 102, 241, 0.15);">📊</div>
+                        <h3>AI SEO Brief Builder</h3>
+                        <p>Generate structured SEO content briefs with competitor analysis, headings, and FAQs.</p>
+                        <div class="tool-meta">
+                            <span>💰 $49-99/mo</span>
+                            <span>⏱️ 2 min</span>
+                        </div>
+                    </div>
+
+                    <div class="tool-card" onclick="showTool('invoice')">
+                        <div class="icon" style="background: rgba(16, 185, 129, 0.15);">💰</div>
+                        <h3>Late Invoice Nudger</h3>
+                        <p>Automated payment reminders and escalation sequences for overdue invoices.</p>
+                        <div class="tool-meta">
+                            <span>💰 $19-49/mo</span>
+                            <span>⏱️ 30 sec</span>
+                        </div>
+                    </div>
+
+                    <div class="tool-card" onclick="showTool('meetings')">
+                        <div class="icon" style="background: rgba(245, 158, 11, 0.15);">📝</div>
+                        <h3>Meeting → Action Items</h3>
+                        <p>Extract tasks, assign owners, and send reminders from meeting transcripts.</p>
+                        <div class="tool-meta">
+                            <span>💰 $29-79/mo</span>
+                            <span>⏱️ 1 min</span>
+                        </div>
+                    </div>
+
+                    <div class="tool-card" onclick="showTool('payments')">
+                        <div class="icon" style="background: rgba(239, 68, 68, 0.15);">🔄</div>
+                        <h3>Payment Recovery</h3>
+                        <p>Recover failed payments via smart retry logic and dunning emails.</p>
+                        <div class="tool-meta">
+                            <span>💰 $49-99/mo</span>
+                            <span>⏱️ 1 min</span>
+                        </div>
+                    </div>
+
+                    <div class="tool-card" onclick="showTool('portal')">
+                        <div class="icon" style="background: rgba(168, 85, 247, 0.15);">📁</div>
+                        <h3>Client Portal Builder</h3>
+                        <p>Create branded client portals with file sharing and project tracking.</p>
+                        <div class="tool-meta">
+                            <span>💰 $29-79/mo</span>
+                            <span>⏱️ 3 min</span>
+                        </div>
+                    </div>
+
+                    <div class="tool-card" onclick="showTool('proposal')">
+                        <div class="icon" style="background: rgba(14, 165, 233, 0.15);">✍️</div>
+                        <h3>AI Proposal Generator</h3>
+                        <p>Auto-generate scoped proposals with pricing options and e-signature.</p>
+                        <div class="tool-meta">
+                            <span>💰 $39-89/mo</span>
+                            <span>⏱️ 2 min</span>
+                        </div>
+                    </div>
+
+                    <div class="tool-card" onclick="showTool('jobs')">
+                        <div class="icon" style="background: rgba(34, 197, 94, 0.15);">💼</div>
+                        <h3>Niche Job Board</h3>
+                        <p>Create specialized job boards for underserved vertical markets.</p>
+                        <div class="tool-meta">
+                            <span>💰 $250/post</span>
+                            <span>⏱️ 2 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="panel-input" style="margin-top: 2rem;">
+                    <div class="panel-header">
+                        <h2>Recent Activity</h2>
+                        <span class="count">Last 7 days</span>
+                    </div>
+                    <div id="recent-activity">
+                        <div class="empty-state">
+                            <div class="icon">📋</div>
+                            <p>No recent activity yet. Start using the tools above!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEO Brief Builder -->
+            <div id="seo-panel" class="tool-panel">
+                <div class="header">
+                    <div>
+                        <h1>AI SEO Brief Builder</h1>
+                        <p>Generate structured SEO content briefs for any industry</p>
+                    </div>
+                </div>
+
+                <div class="panel-grid">
+                    <div class="panel-input">
+                        <div class="panel-header">
+                            <h2>Input</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Target Industry</label>
+                            <select id="seoIndustry">
+                                <option value="dentists">Dentists / Dental Practices</option>
+                                <option value="lawyers">Personal Injury Lawyers</option>
+                                <option value="realestate">Real Estate Agents</option>
+                                <option value="plumbers">Plumbing Services</option>
+                                <option value="hvac">HVAC Companies</option>
+                                <option value="roofers">Roofing Contractors</option>
+                                <option value="accountants">Accountants / CPAs</option>
+                                <option value="restaurants">Restaurants</option>
+                                <option value="gyms">Gyms / Fitness Centers</option>
+                                <option value="photographers">Photographers</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Main Keyword</label>
+                                <input type="text" id="seoKeyword" placeholder="e.g., teeth whitening cost">
+                            </div>
+                            <div class="form-group">
+                                <label>Target Word Count</label>
+                                <select id="seoWordCount">
+                                    <option value="1500">1,500 words</option>
+                                    <option value="2000" selected>2,000 words</option>
+                                    <option value="2500">2,500 words</option>
+                                    <option value="3000">3,000 words</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Competitor URL (optional)</label>
+                            <input type="text" id="seoCompetitor" placeholder="https://example.com/keyword-page">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Additional Instructions</label>
+                            <textarea id="seoNotes" placeholder="Any specific points to include..."></textarea>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="generateSEOBrief()" style="width: 100%;">
+                            <span>✨</span> Generate SEO Brief
+                        </button>
+                    </div>
+
+                    <div class="panel-output">
+                        <div class="panel-header">
+                            <h2>Generated Brief</h2>
+                            <span class="count" id="seo-count">0 characters</span>
+                        </div>
+                        <div class="output-content" id="seoOutput">
+                            <div class="empty-state">
+                                <div class="icon">📝</div>
+                                <p>Fill in the form and click "Generate" to create your SEO brief</p>
+                            </div>
+                        </div>
+                        <div class="output-actions" id="seoActions" style="display: none;">
+                            <button class="btn btn-secondary" onclick="copyOutput('seoOutput')">📋 Copy</button>
+                            <button class="btn btn-secondary" onclick="downloadOutput('seoOutput', 'seo-brief.txt')">📥 Download</button>
+                            <button class="btn btn-primary" onclick="saveToRecent('SEO Brief', 'seoOutput')">💾 Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoice Nudger -->
+            <div id="invoice-panel" class="tool-panel">
+                <div class="header">
+                    <div>
+                        <h1>Late Invoice Nudger</h1>
+                        <p>Automated payment reminder sequences for overdue invoices</p>
+                    </div>
+                </div>
+
+                <div class="panel-grid">
+                    <div class="panel-input">
+                        <div class="panel-header">
+                            <h2>Add Invoice</h2>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Client Name</label>
+                                <input type="text" id="invoiceClient" placeholder="Acme Corporation">
+                            </div>
+                            <div class="form-group">
+                                <label>Invoice Amount ($)</label>
+                                <input type="number" id="invoiceAmount" placeholder="2500" value="2500">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Invoice Date</label>
+                                <input type="date" id="invoiceDate">
+                            </div>
+                            <div class="form-group">
+                                <label>Due Date</label>
+                                <input type="date" id="invoiceDueDate">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Client Type</label>
+                            <select id="invoiceClientType">
+                                <option value="freelancer">Freelancer</option>
+                                <option value="agency">Agency</option>
+                                <option value="consultant">Consultant</option>
+                                <option value="saas">SaaS Company</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-secondary" onclick="addInvoice()" style="width: 100%; margin-bottom: 1.5rem;">
+                            ➕ Add to Queue
+                        </button>
+
+                        <div class="panel-header" style="margin-top: 1rem;">
+                            <h2>Invoice Queue</h2>
+                            <span class="count" id="invoice-count">0 invoices</span>
+                        </div>
+                        <div class="invoice-list" id="invoiceList"></div>
+                    </div>
+
+                    <div class="panel-output">
+                        <div class="panel-header">
+                            <h2>Reminder Sequence</h2>
+                            <span class="count" id="nudge-count">Select an invoice</span>
+                        </div>
+
+                        <div class="quick-actions">
+                            <button class="quick-action" onclick="showNudge('day1')">Day 1 - Friendly</button>
+                            <button class="quick-action" onclick="showNudge('day7')">Day 7 - Follow-up</button>
+                            <button class="quick-action" onclick="showNudge('day14')">Day 14 - Firm</button>
+                            <button class="quick-action" onclick="showNudge('day30')">Day 30 - Final</button>
+                        </div>
+
+                        <div class="output-content" id="nudgeOutput">
+                            <div class="empty-state">
+                                <div class="icon">📧</div>
+                                <p>Add an invoice and select a reminder stage to preview</p>
+                            </div>
+                        </div>
+                        <div class="output-actions" id="nudgeActions" style="display: none;">
+                            <button class="btn btn-secondary" onclick="copyOutput('nudgeOutput')">📋 Copy Email</button>
+                            <button class="btn btn-secondary" onclick="sendNudge()">📤 Send Now</button>
+                            <button class="btn btn-primary" onclick="scheduleNudge()">⏰ Schedule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meeting Notes -->
+            <div id="meetings-panel" class="tool-panel">
+                <div class="header">
+                    <div>
+                        <h1>Meeting → Action Items</h1>
+                        <p>Extract tasks, owners, and deadlines from meeting transcripts</p>
+                    </div>
+                </div>
+
+                <div class="panel-grid">
+                    <div class="panel-input">
+                        <div class="panel-header">
+                            <h2>Meeting Transcript</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Meeting Title</label>
+                            <input type="text" id="meetingTitle" placeholder="Q2 Planning Session">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Paste Transcript</label>
+                            <textarea id="meetingTranscript" placeholder="Paste your meeting notes here...">Sarah: We need to redesign the checkout flow by Q2.
+John: I'll handle the user research by March 15th.
+Sarah: John, can you also look at the mobile experience?
+Mike: I'll update the analytics dashboard next week.
+Sarah: Everyone should review the competitor analysis doc.
+John: I'll prepare the presentation for the board meeting.
+Mike: I can take the sprint planning off Sarah's plate.
+Sarah: Thanks Mike. Let's aim to launch by April 1st.</textarea>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="extractActionItems()" style="width: 100%;">
+                            <span>✨</span> Extract Action Items
+                        </button>
+                    </div>
+
+                    <div class="panel-output">
+                        <div class="panel-header">
+                            <h2>Action Items</h2>
+                            <span class="count" id="action-count">0 tasks</span>
+                        </div>
+
+                        <div class="quick-actions">
+                            <button class="quick-action" onclick="sortActions('owner')">Sort by Owner</button>
+                            <button class="quick-action" onclick="sortActions('priority')">Sort by Priority</button>
+                            <button class="quick-action" onclick="clearActions()">🗑️ Clear All</button>
+                        </div>
+
+                        <div class="output-content" id="actionOutput">
+                            <div class="empty-state">
+                                <div class="icon">✅</div>
+                                <p>Enter a meeting transcript to extract action items</p>
+                            </div>
+                        </div>
+                        <div class="output-actions" id="actionActions" style="display: none;">
+                            <button class="btn btn-secondary" onclick="copyOutput('actionOutput')">📋 Copy</button>
+                            <button class="btn btn-secondary" onclick="exportActionsCSV()">📥 Export CSV</button>
+                            <button class="btn btn-primary" onclick="createReminders()">⏰ Create Reminders</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Recovery -->
+            <div id="payments-panel" class="tool-panel">
+                <div class="header">
+                    <div>
+                        <h1>Payment Recovery</h1>
+                        <p>Recover failed payments with smart dunning sequences</p>
+                    </div>
+                </div>
+
+                <div class="panel-grid">
+                    <div class="panel-input">
+                        <div class="panel-header">
+                            <h2>Failed Payment</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Customer Email</label>
+                            <input type="email" id="paymentEmail" placeholder="customer@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Subscription Plan</label>
+                            <select id="paymentPlan">
+                                <option value="starter">Starter - $29/mo</option>
+                                <option value="pro">Pro - $79/mo</option>
+                                <option value="business">Business - $149/mo</option>
+                                <option value="enterprise">Enterprise - $299/mo</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Failed Attempt</label>
+                            <select id="paymentAttempt">
+                                <option value="1">1st attempt failed</option>
+                                <option value="2">2nd attempt failed</option>
+                                <option value="3">3rd attempt failed</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Failure Reason (if known)</label>
+                            <select id="paymentReason">
+                                <option value="unknown">Unknown</option>
+                                <option value="insufficient">Insufficient Funds</option>
+                                <option value="expired">Card Expired</option>
+                                <option value="declined">Card Declined</option>
+                                <option value="locked">Card Locked</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="generateRecoveryEmail()" style="width: 100%;">
+                            <span>✨</span> Generate Recovery Email
+                        </button>
+                    </div>
+
+                    <div class="panel-output">
+                        <div class="panel-header">
+                            <h2>Dunning Email</h2>
+                            <span class="count" id="recovery-count">Preview</span>
+                        </div>
+
+                        <div class="output-content" id="recoveryOutput">
+                            <div class="empty-state">
+                                <div class="icon">💳</div>
+                                <p>Fill in the details to generate a dunning email</p>
+                            </div>
+                        </div>
+                        <div class="output-actions" id="recoveryActions" style="display: none;">
+                            <button class="btn btn-secondary" onclick="copyOutput('recoveryOutput')">📋 Copy</button>
+                            <button class="btn btn-secondary" onclick="previewEmail()">👁️ Preview</button>
+                            <button class="btn btn-primary" onclick="sendRecovery()">📤 Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client Portal -->
+            <div id="portal-panel" class="tool-panel">
+                <div class="header">
+                    <div>
+                        <h1>Client Portal Builder</h1>
+                        <p>Create branded client portals with all essential features</p>
+                    </div>
+                </div>
+
+                <div class="panel-grid">
+                    <div class="panel-input">
+                        <div class="panel-header">
+                            <h2>Portal Configuration</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Agency/Brand Name</label>
+                            <input type="text" id="portalName" placeholder="Acme Digital Agency">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Primary Color</label>
+                            <input type="color" id="portalColor" value="#6366f1" style="width: 60px; height: 40px; border: none; cursor: pointer;">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Features</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" checked id="featureFiles">
+                                    File Sharing
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" checked id="featureProjects">
+                                    Project Tracking
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" checked id="featureApprovals">
+                                    Approvals
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="featureInvoicing">
+                                    Invoicing
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="featureChat">
+                                    Client Chat
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="featureAnalytics">
+                                    Analytics
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="generatePortalSpec()" style="width: 100%;">
+                            <span>✨</span> Generate Portal
+                        </button>
+                    </div>
+
+                    <div class="panel-output">
+                        <div class="panel-header">
+                            <h2>Portal Preview</h2>
+                            <span class="count">Live Preview</span>
+                        </div>
+
+                        <div class="portal-preview" id="portalPreview">
+                            <div class="portal-header">
+                                <div class="portal-logo"></div>
+                                <span class="portal-name">Your Agency</span>
+                            </div>
+                            <div class="portal-nav">
+                                <button class="nav-btn">Dashboard</button>
+                                <button class="nav-btn">Projects</button>
+                                <button class="nav-btn">Files</button>
+                            </div>
+                            <div class="portal-content" id="portalWidgets">
+                                <div class="widget">
+                                    <h4>Active Projects</h4>
+                                    <div class="value">3</div>
+                                </div>
+                                <div class="widget">
+                                    <h4>Pending Files</h4>
+                                    <div class="value">5</div>
+                                </div>
+                                <div class="widget">
+                                    <h4>Approvals</h4>
+                                    <div class="value">2</div>
+                                </div>
+                                <div class="widget">
+                                    <h4>Messages</h4>
+                                    <div class="value">8</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="output-actions">
+                            <button class="btn btn-secondary" onclick="copyPortalCode()">📋 Copy Code</button>
+                            <button class="btn btn-primary" onclick="deployPortal()">🚀 Deploy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proposal Generator -->
+            <div id="proposal-panel" class="tool-panel">
+                <div class="header">
+                    <div>
+                        <h1>AI Proposal Generator</h1>
+                        <p>Create professional project proposals with pricing</p>
+                    </div>
+                </div>
+
+                <div class="panel-grid">
+                    <div class="panel-input">
+                        <div class="panel-header">
+                            <h2>Proposal Details</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Client Name</label>
+                            <input type="text" id="proposalClient" placeholder="Acme Corporation">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Service Type</label>
+                            <select id="proposalService">
+                                <option value="web">Website Development</option>
+                                <option value="marketing">Digital Marketing</option>
+                                <option value="branding">Branding & Design</option>
+                                <option value="consulting">Consulting</option>
+                                <option value="app">App Development</option>
+                                <option value="seo">SEO Services</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Project Budget ($)</label>
+                                <input type="number" id="proposalBudget" placeholder="5000" value="5000">
+                            </div>
+                            <div class="form-group">
+                                <label>Timeline (weeks)</label>
+                                <input type="number" id="proposalTimeline" placeholder="8" value="8">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Key Deliverables</label>
+                            <textarea id="proposalDeliverables" placeholder="What will you deliver?"></textarea>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="generateProposal()" style="width: 100%;">
+                            <span>✨</span> Generate Proposal
+                        </button>
+                    </div>
+
+                    <div class="panel-output">
+                        <div class="panel-header">
+                            <h2>Proposal Preview</h2>
+                            <span class="count" id="proposal-count">Draft</span>
+                        </div>
+
+                        <div class="proposal-preview" id="proposalPreview">
+                            <h1>Project Proposal</h1>
+                            <div class="subtitle">For [Client Name]</div>
+                            
+                            <div class="section">
+                                <h2>Project Overview</h2>
+                                <p>Enter details to generate proposal...</p>
+                            </div>
+                        </div>
+                        <div class="output-actions">
+                            <button class="btn btn-secondary" onclick="copyProposal()">📋 Copy</button>
+                            <button class="btn btn-secondary" onclick="downloadProposal()">📥 Download PDF</button>
+                            <button class="btn btn-primary" onclick="sendProposal()">📤 Send to Client</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Board -->
+            <div id="jobs-panel" class="tool-panel">
+                <div class="header">
+                    <div>
+                        <h1>Niche Job Board</h1>
+                        <p>Create specialized job boards for vertical markets</p>
+                    </div>
+                </div>
+
+                <div class="panel-grid">
+                    <div class="panel-input">
+                        <div class="panel-header">
+                            <h2>Create Job Posting</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Job Category</label>
+                            <select id="jobCategory">
+                                <option value="webflow">Webflow Developers</option>
+                                <option value="framer">Framer Designers</option>
+                                <option value="bubble">No-Code Developers</option>
+                                <option value="web3">Web3 Engineers</option>
+                                <option value="ai">AI/ML Engineers</option>
+                                <option value="react">React Developers</option>
+                                <option value="node">Node.js Developers</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Job Title</label>
+                            <input type="text" id="jobTitle" placeholder="Senior Webflow Designer">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Company Name</label>
+                                <input type="text" id="jobCompany" placeholder="TechStartup Inc">
+                            </div>
+                            <div class="form-group">
+                                <label>Salary Range</label>
+                                <input type="text" id="jobSalary" placeholder="$80-120k">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Location</label>
+                            <select id="jobLocation">
+                                <option value="remote">Remote (Worldwide)</option>
+                                <option value="usa">Remote (USA)</option>
+                                <option value="europe">Remote (Europe)</option>
+                                <option value="onsite">On-site</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Required Skills</label>
+                            <input type="text" id="jobSkills" placeholder="Webflow, Finsweet, Memberstack">
+                        </div>
+
+                        <button class="btn btn-primary" onclick="createJobPosting()" style="width: 100%;">
+                            <span>✨</span> Create Job Board Page
+                        </button>
+                    </div>
+
+                    <div class="panel-output">
+                        <div class="panel-header">
+                            <h2>Job Board</h2>
+                            <span class="count" id="job-count">0 postings</span>
+                        </div>
+
+                        <div class="quick-actions">
+                            <button class="quick-action" onclick="filterJobs('all')">All</button>
+                            <button class="quick-action" onclick="filterJobs('remote')">Remote</button>
+                            <button class="quick-action" onclick="filterJobs('salary')">High Salary</button>
+                        </div>
+
+                        <div class="output-content" id="jobOutput">
+                            <div class="empty-state">
+                                <div class="icon">💼</div>
+                                <p>Create a job posting to get started</p>
+                            </div>
+                        </div>
+                        <div class="output-actions" id="jobActions" style="display: none;">
+                            <button class="btn btn-secondary" onclick="copyJobBoard()">📋 Copy</button>
+                            <button class="btn btn-primary" onclick="publishJobBoard()">🚀 Publish</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span>✓</span>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <script>
+        // State
+        let invoices = [];
+        let actionItems = [];
+        let jobPostings = [];
+        let currentInvoice = null;
+
+        // Navigation
+        function showTool(tool) {
+            document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            if (tool) {
+                document.getElementById(`${tool}-panel`).classList.add('active');
+                document.querySelector(`.nav-item[onclick*="${tool}"]`)?.classList.add('active');
+            } else {
+                document.getElementById('overview-panel').classList.add('active');
+                document.querySelector('.nav-item')?.classList.add('active');
+            }
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // SEO Brief Builder
+        function generateSEOBrief() {
+            const industry = document.getElementById('seoIndustry').value;
+            const keyword = document.getElementById('seoKeyword').value || 'your target keyword';
+            const wordCount = document.getElementById('seoWordCount').value;
+            const competitor = document.getElementById('seoCompetitor').value || 'Not provided';
+            const notes = document.getElementById('seoNotes').value || 'None specified';
+
+            const industries = {
+                dentists: { audience: 'General Dentists & Dental Practices', problems: ['Low patient conversion', 'Insurance confusion', 'Fear of procedures'] },
+                lawyers: { audience: 'Personal Injury Lawyers', problems: ['Client intake efficiency', 'Case evaluation', 'Referral generation'] },
+                realestate: { audience: 'Residential Real Estate Agents', problems: ['Lead generation', 'Open house attendance', 'Client follow-up'] },
+                plumbers: { audience: 'Local Plumbing Services', problems: ['Emergency availability', 'Pricing transparency', 'Reviews management'] },
+                hvac: { audience: 'HVAC Companies', problems: ['Seasonal demand', 'Service agreements', 'AC repair urgency'] },
+                roofers: { audience: 'Roofing Contractors', problems: ['Storm damage claims', 'Free estimates', 'Warranty questions'] },
+                accountants: { audience: 'Accountants & CPAs', problems: ['Tax season overwhelm', 'Client retention', 'Service diversification'] },
+                restaurants: { audience: 'Restaurant Owners', problems: ['Online reviews', 'Food delivery', 'Local SEO'] },
+                gyms: { audience: 'Gyms & Fitness Centers', problems: ['Member retention', 'Personal training sales', 'Class bookings'] },
+                photographers: { audience: 'Photographers', problems: ['Portfolio visibility', 'Package pricing', 'Booking automation'] }
+            };
+
+            const data = industries[industry];
+
+            const brief = `
+═══════════════════════════════════════════════════════════════
+                    SEO CONTENT BRIEF: ${keyword.toUpperCase()}
+═══════════════════════════════════════════════════════════════
+
+📋 TARGET AUDIENCE
+   ${data.audience}
+
+═══════════════════════════════════════════════════════════════
+
+📊 CONTENT SPECIFICATIONS
+   • Word Count: ${parseInt(wordCount).toLocaleString()} words
+   • Reading Level: Grade 8 (accessible)
+   • Format: Long-form article with FAQ
+   • Goal: Generate organic leads
+
+═══════════════════════════════════════════════════════════════
+
+🎯 PRIMARY KEYWORD
+   ${keyword}
+
+   Secondary Keywords:
+   • ${keyword} cost / price
+   • ${keyword} near me
+   • best ${keyword}
+   • ${keyword} reviews
+
+═══════════════════════════════════════════════════════════════
+
+🔍 KEY PROBLEMS TO ADDRESS
+${data.problems.map((p, i) => `   ${i + 1}. ${p}`).join('\n')}
+
+═══════════════════════════════════════════════════════════════
+
+📝 RECOMMENDED STRUCTURE
+
+   1. INTRODUCTION (10%) - ${Math.floor(wordCount * 0.1).toLocaleString()} words
+      • Hook with surprising statistic or question
+      • Relate to reader's pain point
+      • Brief overview of what they'll learn
+
+   2. WHAT IS [TOPIC]? (15%) - ${Math.floor(wordCount * 0.15).toLocaleString()} words
+      • Clear definition
+      • Common misconceptions
+      • Why it matters now
+
+   3. TOP BENEFITS (25%) - ${Math.floor(wordCount * 0.25).toLocaleString()} words
+      • Benefit 1: ${data.problems[0]}
+      • Benefit 2: ${data.problems[1]}
+      • Benefit 3: ${data.problems[2]}
+      • Include actionable tips
+
+   4. HOW-TO GUIDE (25%) - ${Math.floor(wordCount * 0.25).toLocaleString()} words
+      • Step-by-step instructions
+      • Numbered list format
+      • Pro tips callouts
+
+   5. COST/PRICING (10%) - ${Math.floor(wordCount * 0.1).toLocaleString()} words
+      • Price ranges
+      • What affects cost
+      • Value proposition
+
+   6. FAQ SECTION (10%) - ${Math.floor(wordCount * 0.1).toLocaleString()} words
+      • 6-8 common questions
+      • Schema markup ready
+      • Natural language
+
+   7. CONCLUSION (5%) - ${Math.floor(wordCount * 0.05).toLocaleString()} words
+      • Summary
+      • Call to action
+      • Next steps
+
+═══════════════════════════════════════════════════════════════
+
+📈 SEO METRICS TARGET
+   • Target: 500+ organic visits/month
+   • Conversion rate: 2-3% (form fills/calls)
+   • Time to ranking: 3-6 months
+   • Bounce rate target: <60%
+
+═══════════════════════════════════════════════════════════════
+
+🔗 COMPETITOR ANALYSIS
+   Competitor URL: ${competitor}
+   
+   Differentiators to emphasize:
+   • Your unique value proposition
+   • Local expertise
+   • Customer testimonials
+   • Guarantees/warranties
+
+═══════════════════════════════════════════════════════════════
+
+📝 ADDITIONAL NOTES
+   ${notes}
+
+═══════════════════════════════════════════════════════════════
+            `;
+
+            document.getElementById('seoOutput').textContent = brief;
+            document.getElementById('seo-count').textContent = `${brief.length} characters`;
+            document.getElementById('seoActions').style.display = 'flex';
+            showToast('SEO Brief generated!');
+        }
+
+        // Invoice Nudger
+        function addInvoice() {
+            const client = document.getElementById('invoiceClient').value;
+            const amount = document.getElementById('invoiceAmount').value;
+            const date = document.getElementById('invoiceDate').value;
+            const dueDate = document.getElementById('invoiceDueDate').value;
+            const type = document.getElementById('invoiceClientType').value;
+
+            if (!client || !amount) {
+                showToast('Please fill in client name and amount');
+                return;
+            }
+
+            const invoice = {
+                id: Date.now(),
+                client,
+                amount: parseInt(amount),
+                date: date || new Date().toISOString().split('T')[0],
+                dueDate: dueDate || new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0],
+                type,
+                stage: 0
+            };
+
+            invoices.push(invoice);
+            renderInvoiceList();
+            showToast('Invoice added to queue!');
+        }
+
+        function renderInvoiceList() {
+            const list = document.getElementById('invoiceList');
+            document.getElementById('invoice-count').textContent = `${invoices.length} invoices`;
+
+            if (invoices.length === 0) {
+                list.innerHTML = '<div class="empty-state"><p>No invoices in queue</p></div>';
+                return;
+            }
+
+            list.innerHTML = invoices.map(inv => `
+                <div class="invoice-item" onclick="selectInvoice(${inv.id})">
+                    <div class="info">
+                        <span class="client">${inv.client}</span>
+                        <span class="amount">$${inv.amount.toLocaleString()} • Due: ${inv.dueDate}</span>
+                    </div>
+                    <span class="tag ${inv.stage === 0 ? 'warning' : inv.stage >= 3 ? 'success' : ''}">${getStageName(inv.stage)}</span>
+                </div>
+            `).join('');
+        }
+
+        function getStageName(stage) {
+            const stages = ['Sent', 'Reminder 1', 'Reminder 2', 'Final'];
+            return stages[Math.min(stage, 3)];
+        }
+
+        function selectInvoice(id) {
+            currentInvoice = invoices.find(i => i.id === id);
+            showToast(`Selected: ${currentInvoice.client}`);
+        }
+
+        function showNudge(stage) {
+            if (!currentInvoice) {
+                showToast('Please select an invoice first');
+                return;
+            }
+
+            const messages = {
+                day1: {
+                    days: 0,
+                    subject: 'Friendly Reminder: Invoice Due Today',
+                    tone: 'Friendly, professional'
+                },
+                day7: {
+                    days: 7,
+                    subject: 'Quick Follow-up: Invoice Payment',
+                    tone: 'Gentle but clear'
+                },
+                day14: {
+                    days: 14,
+                    subject: '⚠️ Action Required: Invoice Overdue',
+                    tone: 'Firm but professional'
+                },
+                day30: {
+                    days: 30,
+                    subject: '🚨 Final Notice: Invoice Payment Required',
+                    tone: 'Final warning'
+                }
+            };
+
+            const msg = messages[stage];
+            const days = Math.floor((new Date() - new Date(currentInvoice.dueDate)) / (1000*60*60*24)) || msg.days;
+
+            const nudge = `
+TO: ${currentInvoice.client}
+SUBJECT: ${msg.subject}
+TONE: ${msg.tone}
+
+───────────────────────────────────────────────────────────────
+
+Hi ${currentInvoice.client.split(' ')[0]},
+
+${days === 0 ? `I hope this message finds you well!
+
+This is a friendly reminder that Invoice for $${currentInvoice.amount.toLocaleString()} is due today.
+
+If you've already sent payment, please disregard this message. If not, you can pay securely using the link below.
+
+[Pay Now Button]
+
+As a reminder, prompt payments help us continue delivering excellent service.
+
+Thank you for your business!` : 
+days <= 7 ? `I wanted to follow up regarding Invoice for $${currentInvoice.amount.toLocaleString()}, which was due recently.
+
+Our records show this is now ${days} days past due.
+
+I understand things can slip through the cracks, so I've attached the invoice again for your convenience:
+
+[Pay Now Button]
+
+Please let me know if you have any questions or if there's anything we should address.
+
+Thank you for your attention!` :
+days <= 14 ? `This is a follow-up regarding Invoice for $${currentInvoice.amount.toLocaleString()}, now ${days} days overdue.
+
+Please confirm:
+• When can we expect payment?
+• Are there any issues with the invoice?
+
+[Pay Now Button]
+
+If payment isn't received within 5 business days, we'll need to pause services until the account is current.
+
+We hope to continue working together.` :
+`Despite previous reminders, we have not received payment for Invoice ($${currentInvoice.amount.toLocaleString()}), now ${days} days overdue.
+
+This is our FINAL notice before taking further action.
+
+Please make payment immediately:
+
+[Pay Now Button]
+
+If payment is not received within 48 hours, we will:
+• Refer the account to collections
+• Report the outstanding debt
+• Discontinue all services
+
+Please contact us immediately if there are extraordinary circumstances.`}
+
+Best regards,
+[Your Name]
+[Your Company]
+
+───────────────────────────────────────────────────────────────
+
+💡 Send via: Email | Stripe Dashboard | PayPal | Bank Transfer
+⏰ Recommended send time: Tuesday-Thursday, 9-11 AM
+            `;
+
+            document.getElementById('nudgeOutput').textContent = nudge;
+            document.getElementById('nudge-count').textContent = `Day ${days} reminder`;
+            document.getElementById('nudgeActions').style.display = 'flex';
+            showToast(`${msg.tone} email generated!`);
+        }
+
+        function sendNudge() {
+            showToast('Email sent! (Demo mode)');
+        }
+
+        function scheduleNudge() {
+            showToast('Reminder scheduled for 3 days from now');
+        }
+
+        // Meeting Notes
+        function extractActionItems() {
+            const title = document.getElementById('meetingTitle').value || 'Untitled Meeting';
+            const transcript = document.getElementById('meetingTranscript').value;
+
+            if (!transcript) {
+                showToast('Please enter a meeting transcript');
+                return;
+            }
+
+            // Simple extraction logic
+            const lines = transcript.split('\n').filter(l => l.trim());
+            const items = [];
+            const owners = ['Sarah', 'John', 'Mike', 'Alex', 'Emma', 'David', 'Lisa', 'Tom'];
+            
+            lines.forEach(line => {
+                const clean = line.replace(/^[^:]+:\s*/, '').trim();
+                if (clean.length > 10 && clean.length < 200) {
+                    // Find owner
+                    let owner = owners.find(o => line.toLowerCase().includes(o.toLowerCase())) || 'Unassigned';
+                    
+                    // Extract deadline
+                    let deadline = 'Not set';
+                    const dateMatch = clean.match(/(january|february|march|april|may|june|july|august|september|october|november|december|\d{1,2}\/\d{1,2}|next week|q[1-4]|by \w+)/i);
+                    if (dateMatch) deadline = dateMatch[0];
+                    
+                    // Determine priority
+                    let priority = 'Medium';
+                    if (clean.match(/\b(urgent|asap|immediately|important|critical)\b/i)) priority = 'High';
+                    else if (clean.match(/\b(can|could|might|sometimes)\b/i)) priority = 'Low';
+
+                    items.push({
+                        task: clean,
+                        owner,
+                        deadline,
+                        priority,
+                        done: false
+                    });
+                }
+            });
+
+            actionItems = items;
+            renderActionItems();
+            showToast(`Extracted ${items.length} action items!`);
+        }
+
+        function renderActionItems() {
+            const container = document.getElementById('actionOutput');
+            document.getElementById('action-count').textContent = `${actionItems.length} tasks`;
+
+            if (actionItems.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No action items yet</p></div>';
+                document.getElementById('actionActions').style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = actionItems.map((item, i) => `
+                <div class="action-item ${item.done ? 'done' : ''}" onclick="toggleAction(${i})">
+                    <div class="checkbox"></div>
+                    <div class="content">
+                        <div class="task">${item.task}</div>
+                        <div class="meta">
+                            <span>👤 ${item.owner}</span>
+                            <span>📅 ${item.deadline}</span>
+                            <span class="tag ${item.priority === 'High' ? 'warning' : item.priority === 'Low' ? 'success' : ''}">${item.priority}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('actionActions').style.display = 'flex';
+        }
+
+        function toggleAction(index) {
+            actionItems[index].done = !actionItems[index].done;
+            renderActionItems();
+        }
+
+        function sortActions(by) {
+            if (by === 'owner') {
+                actionItems.sort((a, b) => a.owner.localeCompare(b.owner));
+            } else {
+                const priority = { High: 0, Medium: 1, Low: 2 };
+                actionItems.sort((a, b) => priority[a.priority] - priority[b.priority]);
+            }
+            renderActionItems();
+        }
+
+        function clearActions() {
+            actionItems = [];
+            renderActionItems();
+            showToast('All action items cleared');
+        }
+
+        function exportActionsCSV() {
+            const csv = 'Task,Owner,Deadline,Priority,Status\n' + 
+                actionItems.map(a => `"${a.task}","${a.owner}","${a.deadline}","${a.priority}","${a.done ? 'Done' : 'Pending'}"`).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'action-items.csv';
+            a.click();
+            showToast('CSV exported!');
+        }
+
+        function createReminders() {
+            const pending = actionItems.filter(a => !a.done);
+            showToast(`${pending.length} reminders created!`);
+        }
+
+        // Payment Recovery
+        function generateRecoveryEmail() {
+            const email = document.getElementById('paymentEmail').value || 'customer@example.com';
+            const plan = document.getElementById('paymentPlan').value;
+            const attempt = document.getElementById('paymentAttempt').value;
+            const reason = document.getElementById('paymentReason').value;
+
+            const plans = { starter: '$29/mo', pro: '$79/mo', business: '$149/mo', enterprise: '$299/mo' };
+            const reasons = { insufficient: 'Insufficient funds', expired: 'Card has expired', declined: 'Card was declined', locked: 'Card may be locked', unknown: 'Payment system error' };
+
+            const emails = {
+                1: {
+                    subject: 'We noticed your payment didn\'t go through 💳',
+                    header: 'First Attempt'
+                },
+                2: {
+                    subject: '⚠️ Action Required: Payment failed again',
+                    header: 'Second Attempt'
+                },
+                3: {
+                    subject: '🚨 Final Warning: Account will be suspended',
+                    header: 'Final Attempt'
+                }
+            };
+
+            const msg = emails[attempt];
+
+            const recovery = `
+TO: ${email}
+SUBJECT: ${msg.subject}
+STATUS: ${msg.header}
+PLAN: ${plans[plan]}
+ATTEMPT: #${attempt}
+
+───────────────────────────────────────────────────────────────
+
+Hi there,
+
+${attempt === '1' ? `We tried to charge your card for your ${plans[plan]} subscription but the payment wasn't successful.
+
+This can happen sometimes due to:
+• Expired card
+• Insufficient funds
+• Bank security holds
+
+Please update your payment method to keep your subscription active:
+
+[Update Payment Method]
+
+Your account will not be interrupted for the next 5 days.
+
+Need help? Just reply to this email.
+
+The Team` :
+attempt === '2' ? `We tried again to process your payment for the ${plans[plan]} plan, but it still didn't go through.
+
+Your account is now at risk of service interruption.
+
+Please update your payment method immediately:
+
+[Update Payment Method Now]
+
+If we don't receive payment within 3 days, your subscription will be paused.
+
+Questions? We're here to help.
+
+The Team` :
+`This is your FINAL notice.
+
+We've tried multiple times to collect payment for your ${plans[plan]} subscription without success.
+
+Your account will be SUSPENDED in 24 hours if we don't receive payment.
+
+[SAVE MY ACCOUNT - Update Payment]
+
+After suspension, you'll lose access to:
+• All your data
+• Premium features
+• Priority support
+
+Please act now - we don't want to lose you!
+
+The Team`}
+
+───────────────────────────────────────────────────────────────
+
+📊 RECOVERY STATS:
+   Attempt 1: 40-60% recovery
+   Attempt 2: 15-25% recovery
+   Attempt 3: 5-10% recovery
+   
+   📈 Overall recovery rate: Up to 85%
+            `;
+
+            document.getElementById('recoveryOutput').textContent = recovery;
+            document.getElementById('recovery-count').textContent = `Attempt ${attempt}`;
+            document.getElementById('recoveryActions').style.display = 'flex';
+            showToast('Recovery email generated!');
+        }
+
+        function previewEmail() {
+            showToast('Opening email preview...');
+        }
+
+        function sendRecovery() {
+            showToast('Recovery email sent! (Demo mode)');
+        }
+
+        // Client Portal
+        function generatePortalSpec() {
+            const name = document.getElementById('portalName').value || 'Your Agency';
+            const color = document.getElementById('portalColor').value;
+
+            const features = {
+                files: document.getElementById('featureFiles').checked,
+                projects: document.getElementById('featureProjects').checked,
+                approvals: document.getElementById('featureApprovals').checked,
+                invoicing: document.getElementById('featureInvoicing').checked,
+                chat: document.getElementById('featureChat').checked,
+                analytics: document.getElementById('featureAnalytics').checked
+            };
+
+            // Update preview
+            const logo = document.querySelector('.portal-logo');
+            logo.style.background = color;
+            document.querySelector('.portal-name').textContent = name;
+
+            const widgets = document.getElementById('portalWidgets');
+            let widgetHTML = '';
+            if (features.files) widgetHTML += '<div class="widget"><h4>Files</h4><div class="value">✓</div></div>';
+            if (features.projects) widgetHTML += '<div class="widget"><h4>Projects</h4><div class="value">✓</div></div>';
+            if (features.approvals) widgetHTML += '<div class="widget"><h4>Approvals</h4><div class="value">✓</div></div>';
+            if (features.invoicing) widgetHTML += '<div class="widget"><h4>Invoices</h4><div class="value">✓</div></div>';
+            if (features.chat) widgetHTML += '<div class="widget"><h4>Chat</h4><div class="value">✓</div></div>';
+            if (features.analytics) widgetHTML += '<div class="widget"><h4>Analytics</h4><div class="value">✓</div></div>';
+            widgets.innerHTML = widgetHTML || '<p style="color: var(--text-muted);">Select features to preview</p>';
+
+            showToast('Portal preview updated!');
+        }
+
+        function copyPortalCode() {
+            showToast('Portal code copied!');
+        }
+
+        function deployPortal() {
+            showToast('Portal deployed! (Demo mode)');
+        }
+
+        // Proposal Generator
+        function generateProposal() {
+            const client = document.getElementById('proposalClient').value || 'Client';
+            const service = document.getElementById('proposalService').value;
+            const budget = parseInt(document.getElementById('proposalBudget').value) || 5000;
+            const timeline = parseInt(document.getElementById('proposalTimeline').value) || 8;
+            const deliverables = document.getElementById('proposalDeliverables').value;
+
+            const services = {
+                web: { name: 'Website Development', items: ['Custom website design', 'Responsive development', 'SEO optimization', '3 months support'] },
+                marketing: { name: 'Digital Marketing', items: ['SEO audit & strategy', 'Content calendar (12 posts)', 'Monthly reporting', 'Social media management'] },
+                branding: { name: 'Branding & Design', items: ['Logo design (3 concepts)', 'Brand guidelines', 'Business card design', 'Social media templates'] },
+                consulting: { name: 'Consulting Services', items: ['Strategy session (4 hrs/month)', 'Implementation roadmap', 'Weekly check-ins', 'Email support'] },
+                app: { name: 'App Development', items: ['Native iOS & Android', 'UI/UX design', 'Backend development', 'App store submission'] },
+                seo: { name: 'SEO Services', items: ['Technical SEO audit', 'Keyword research (50 terms)', 'On-page optimization', 'Monthly reporting'] }
+            };
+
+            const svc = services[service];
+            const deposit = Math.round(budget * 0.5);
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const endDate = new Date(Date.now() + timeline * 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            document.getElementById('proposalPreview').innerHTML = `
+                <h1>Project Proposal</h1>
+                <div class="subtitle">For ${client} • ${today}</div>
+                
+                <div class="section">
+                    <h2>📋 Project Overview</h2>
+                    <p>We will provide professional ${svc.name.toLowerCase()} services tailored to your specific needs and business objectives.</p>
+                </div>
+
+                <div class="section">
+                    <h2>✅ Deliverables</h2>
+                    <ul>
+                        ${svc.items.map(item => `<li>${item}</li>`).join('')}
+                        ${deliverables ? `<li>${deliverables}</li>` : ''}
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>📅 Timeline</h2>
+                    <p>Project duration: ${timeline} weeks (Starting ${today} - Ending ${endDate})</p>
+                </div>
+
+                <div class="section">
+                    <h2>💰 Investment</h2>
+                    <div class="price">$${budget.toLocaleString()}</div>
+                    <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;">
+                        Deposit: $${deposit.toLocaleString()} (50%) to start<br>
+                        Balance: $${(budget - deposit).toLocaleString()} upon completion
+                    </p>
+                </div>
+
+                <div class="section">
+                    <h2>✍️ Acceptance</h2>
+                    <p style="border: 1px dashed #ccc; padding: 1rem; margin-top: 0.5rem;">
+                        Client Signature: ___________________<br><br>
+                        Date: ___________________
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('proposal-count').textContent = 'Ready';
+            showToast('Proposal generated!');
+        }
+
+        function copyProposal() {
+            showToast('Proposal copied!');
+        }
+
+        function downloadProposal() {
+            showToast('PDF downloaded! (Demo mode)');
+        }
+
+        function sendProposal() {
+            showToast('Proposal sent to client! (Demo mode)');
+        }
+
+        // Job Board
+        function createJobPosting() {
+            const category = document.getElementById('jobCategory').value;
+            const title = document.getElementById('jobTitle').value || 'Job Title';
+            const company = document.getElementById('jobCompany').value || 'Company';
+            const salary = document.getElementById('jobSalary').value || '$80-120k';
+            const location = document.getElementById('jobLocation').value;
+            const skills = document.getElementById('jobSkills').value || 'Webflow, Design';
+
+            const categories = {
+                webflow: { icon: '🌊', name: 'Webflow' },
+                framer: { icon: '🎨', name: 'Framer' },
+                bubble: { icon: '🫧', name: 'No-Code' },
+                web3: { icon: '⛓️', name: 'Web3' },
+                ai: { icon: '🤖', name: 'AI/ML' },
+                react: { icon: '⚛️', name: 'React' },
+                node: { icon: '🟢', name: 'Node.js' }
+            };
+
+            const cat = categories[category];
+            const locations = { remote: '🌍 Remote (Worldwide)', usa: '🇺🇸 Remote (USA)', europe: '🇪🇺 Remote (Europe)', onsite: '📍 On-site' };
+
+            const job = {
+                id: Date.now(),
+                category: cat.name,
+                icon: cat.icon,
+                title,
+                company,
+                salary,
+                location: locations[location],
+                skills: skills.split(',').map(s => s.trim()),
+                date: new Date().toLocaleDateString()
+            };
+
+            jobPostings.push(job);
+            renderJobBoard();
+            showToast('Job posting created!');
+        }
+
+        function renderJobBoard() {
+            const container = document.getElementById('jobOutput');
+            document.getElementById('job-count').textContent = `${jobPostings.length} postings`;
+
+            if (jobPostings.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No job postings yet</p></div>';
+                document.getElementById('jobActions').style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = jobPostings.map(job => `
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <div class="job-title">${job.icon} ${job.title}</div>
+                            <div class="job-company">${job.company}</div>
+                        </div>
+                        <span class="tag success">${job.salary}</span>
+                    </div>
+                    <div class="job-meta">
+                        <span>${job.location}</span>
+                        <span>•</span>
+                        <span>${job.skills.slice(0, 3).join(', ')}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('jobActions').style.display = 'flex';
+        }
+
+        function filterJobs(filter) {
+            showToast(`Filtered: ${filter}`);
+        }
+
+        function copyJobBoard() {
+            showToast('Job board copied!');
+        }
+
+        function publishJobBoard() {
+            showToast('Job board published! (Demo mode)');
+        }
+
+        // Utility
+        function copyOutput(id) {
+            const text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text);
+            showToast('Copied to clipboard!');
+        }
+
+        function downloadOutput(id, filename) {
+            const text = document.getElementById(id).textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            showToast('Downloaded!');
+        }
+
+        function saveToRecent(type, id) {
+            showToast(`${type} saved!`);
+        }
+
+        // Set default dates
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            const dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            document.getElementById('invoiceDate').value = today;
+            document.getElementById('invoiceDueDate').value = dueDate;
+        });
+    </script>
+</body>
+</html>
