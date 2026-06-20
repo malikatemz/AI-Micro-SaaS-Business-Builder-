@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg-primary: #0a0a0f; --bg-secondary: #111118; --bg-card: #1a1a24; --bg-input: #252532; --accent: #0ea5e9; --success: #10b981; --text: #ffffff; --text-secondary: #9ca3af; --text-muted: #6b7280; --border: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text); min-height: 100vh; }
+        header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), #0284c7); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .logo-text { font-size: 1.25rem; font-weight: 700; }
+        .logo-text span { background: linear-gradient(135deg, var(--accent), #0284c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stats-bar { background: var(--bg-secondary); padding: 1rem 2rem; border-bottom: 1px solid var(--border); }
+        .stats-content { max-width: 1400px; margin: 0 auto; display: flex; gap: 3rem; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), #0284c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .main { max-width: 1400px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 400px 1fr; gap: 2rem; }
+        @media (max-width: 1024px) { .main { grid-template-columns: 1fr; } }
+        .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+        .panel-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .panel-header h2 { font-size: 1.1rem; font-weight: 600; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn { padding: 0.875rem 1.5rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent), #0284c7); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3); }
+        .btn-secondary { background: var(--bg-input); border: 1px solid var(--border); margin-top: 0.5rem; color: var(--text); }
+        .preview { background: white; color: #1a1a1a; border-radius: 12px; padding: 2rem; max-height: calc(100vh - 250px); overflow-y: auto; }
+        .preview h1 { font-size: 1.5rem; margin-bottom: 0.25rem; color: #1a1a1a; }
+        .preview .subtitle { color: #666; margin-bottom: 1.5rem; font-size: 0.9rem; }
+        .preview .section { margin-bottom: 1.25rem; }
+        .preview .section h2 { font-size: 0.9rem; color: #333; margin-bottom: 0.5rem; font-weight: 600; }
+        .preview ul { margin-left: 1.25rem; font-size: 0.85rem; }
+        .preview li { margin-bottom: 0.25rem; }
+        .preview .price { font-size: 2rem; font-weight: 700; color: var(--accent); }
+        .preview .signature { border-top: 1px dashed #ccc; padding-top: 1rem; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
+        .btn-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .btn-actions .btn { width: auto; flex: 1; }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; background: var(--bg-card); border: 1px solid var(--success); border-radius: 10px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; text-align: center; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">✍️</div>
+                <div class="logo-text">Proposal <span>Generator</span></div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem;">AI-Powered Proposals</div>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stats-content">
+            <div class="stat"><div class="stat-value">$39-89</div><div class="stat-label">Price/mo</div></div>
+            <div class="stat"><div class="stat-value">5 min</div><div class="stat-label">Avg. Time</div></div>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="panel">
+            <div class="panel-header"><h2>Proposal Details</h2></div>
+            
+            <div class="form-group">
+                <label>Client Name</label>
+                <input type="text" id="client" placeholder="Acme Corporation">
+            </div>
+
+            <div class="form-group">
+                <label>Service Type</label>
+                <select id="service">
+                    <option value="web">Website Development</option>
+                    <option value="marketing">Digital Marketing</option>
+                    <option value="branding">Branding & Design</option>
+                    <option value="consulting">Consulting</option>
+                    <option value="app">App Development</option>
+                    <option value="seo">SEO Services</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Budget ($)</label>
+                    <input type="number" id="budget" value="5000">
+                </div>
+                <div class="form-group">
+                    <label>Timeline (weeks)</label>
+                    <input type="number" id="timeline" value="8">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Your Company</label>
+                <input type="text" id="company" placeholder="Your Company Inc">
+            </div>
+
+            <div class="form-group">
+                <label>Deliverables (one per line)</label>
+                <textarea id="deliverables" placeholder="Custom website design&#10;Mobile responsive&#10;SEO optimization"></textarea>
+            </div>
+
+            <button class="btn btn-primary" onclick="generateProposal()"><span>✨</span> Generate Proposal</button>
+            <button class="btn btn-secondary" onclick="sendProposal()">📤 Send to Client</button>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header"><h2>Proposal Preview</h2></div>
+            <div class="preview" id="preview">
+                <h1>Project Proposal</h1>
+                <div class="subtitle">For [Client Name] • [Date]</div>
+                <div class="section">
+                    <h2>Project Overview</h2>
+                    <p>Fill in the details and click "Generate Proposal"</p>
+                </div>
+            </div>
+            <div class="btn-actions">
+                <button class="btn btn-secondary" onclick="copyProposal()">📋 Copy</button>
+                <button class="btn btn-secondary" onclick="downloadProposal()">📥 Download</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"><span>✓</span><span id="toastMessage">Success!</span></div>
+
+    <script>
+        const API = window.location.origin;
+        let currentProposal = null;
+
+        function showToast(m) {
+            document.getElementById('toastMessage').textContent = m;
+            document.getElementById('toast').classList.add('show');
+            setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+        }
+
+        async function generateProposal() {
+            const data = {
+                client: document.getElementById('client').value || 'Client',
+                service: document.getElementById('service').value,
+                budget: parseInt(document.getElementById('budget').value) || 5000,
+                timeline: parseInt(document.getElementById('timeline').value) || 8,
+                company: document.getElementById('company').value || 'Your Company',
+                deliverables: document.getElementById('deliverables').value
+            };
+
+            const res = await fetch(`${API}/api/proposals`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            currentProposal = await res.json();
+            renderPreview();
+            showToast('Proposal generated!');
+        }
+
+        function renderPreview() {
+            const p = currentProposal;
+            document.getElementById('preview').innerHTML = `
+                <h1>Project Proposal</h1>
+                <div class="subtitle">For ${p.client} • ${p.date}</div>
+                
+                <div class="section">
+                    <h2>Project Overview</h2>
+                    <p>Professional ${p.service.toLowerCase()} services tailored to your specific needs and business objectives.</p>
+                </div>
+
+                <div class="section">
+                    <h2>Deliverables</h2>
+                    <ul>${p.deliverables.map(d => `<li>${d}</li>`).join('')}</ul>
+                </div>
+
+                <div class="section">
+                    <h2>Timeline</h2>
+                    <p>Project duration: ${p.timeline} weeks (Starting ${p.date} - Ending ${p.endDate})</p>
+                </div>
+
+                <div class="section">
+                    <h2>Investment</h2>
+                    <div class="price">$${p.budget.toLocaleString()}</div>
+                    <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;">
+                        Deposit: $${p.deposit.toLocaleString()} (50%) to start<br>
+                        Balance: $${p.balance.toLocaleString()} upon completion
+                    </p>
+                </div>
+
+                <div class="signature">
+                    Client Signature: ___________________ Date: ___________<br><br>
+                    ${p.company} Signature: ___________________ Date: ___________
+                </div>
+            `;
+        }
+
+        function copyProposal() {
+            if (currentProposal) {
+                navigator.clipboard.writeText(document.getElementById('preview').innerText);
+                showToast('Copied!');
+            }
+        }
+
+        function downloadProposal() { showToast('Download started!'); }
+        function sendProposal() { showToast('Proposal sent! (Demo)'); }
+    </script>
+</body>
+</html>

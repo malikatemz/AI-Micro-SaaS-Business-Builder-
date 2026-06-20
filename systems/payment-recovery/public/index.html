@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Recovery - Failed Payment Dunning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg-primary: #0a0a0f; --bg-secondary: #111118; --bg-card: #1a1a24; --bg-input: #252532; --accent: #ef4444; --success: #10b981; --text: #ffffff; --text-secondary: #9ca3af; --text-muted: #6b7280; --border: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text); min-height: 100vh; }
+        header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), #dc2626); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .logo-text { font-size: 1.25rem; font-weight: 700; }
+        .logo-text span { background: linear-gradient(135deg, var(--accent), #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stats-bar { background: var(--bg-secondary); padding: 1rem 2rem; border-bottom: 1px solid var(--border); }
+        .stats-content { max-width: 1400px; margin: 0 auto; display: flex; gap: 3rem; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), #dc2626); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .main { max-width: 1400px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 400px 1fr; gap: 2rem; }
+        @media (max-width: 1024px) { .main { grid-template-columns: 1fr; } }
+        .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+        .panel-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .panel-header h2 { font-size: 1.1rem; font-weight: 600; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
+        .btn { padding: 0.875rem 1.5rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent), #dc2626); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3); }
+        .btn-secondary { background: var(--bg-input); color: var(--text); border: 1px solid var(--border); margin-top: 0.5rem; }
+        .quick-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 1rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
+        .quick-btn { padding: 0.5rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-secondary); font-size: 0.8rem; cursor: pointer; }
+        .quick-btn:hover { background: var(--accent); color: white; }
+        .email-meta { background: var(--bg-input); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; }
+        .email-meta-item { display: flex; gap: 0.75rem; margin-bottom: 0.5rem; font-size: 0.85rem; }
+        .email-meta-label { color: var(--text-muted); }
+        .email-body { font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); white-space: pre-wrap; background: var(--bg-primary); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border); min-height: 200px; }
+        .recovery-stat { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 10px; margin-top: 1rem; }
+        .recovery-value { font-size: 2rem; font-weight: 700; color: var(--success); }
+        .recovery-label { font-size: 0.85rem; color: var(--text-secondary); }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; background: var(--bg-card); border: 1px solid var(--success); border-radius: 10px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; text-align: center; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🔄</div>
+                <div class="logo-text">Payment <span>Recovery</span></div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem;">Dunning Email Sequences</div>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stats-content">
+            <div class="stat"><div class="stat-value" id="stat-pending">0</div><div class="stat-label">Pending Payments</div></div>
+            <div class="stat"><div class="stat-value" id="stat-sent">0</div><div class="stat-label">Emails Sent</div></div>
+            <div class="stat"><div class="stat-value" id="stat-recovery">85%</div><div class="stat-label">Avg. Recovery</div></div>
+            <div class="stat"><div class="stat-value">$49-99</div><div class="stat-label">Price/mo</div></div>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="panel">
+            <div class="panel-header"><h2>Failed Payment</h2></div>
+            <div class="form-group">
+                <label>Customer Email</label>
+                <input type="email" id="email" placeholder="customer@example.com">
+            </div>
+            <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="name" placeholder="John Smith">
+            </div>
+            <div class="form-group">
+                <label>Subscription Plan</label>
+                <select id="plan">
+                    <option value="starter">Starter - $29/mo</option>
+                    <option value="pro">Pro - $79/mo</option>
+                    <option value="business">Business - $149/mo</option>
+                    <option value="enterprise">Enterprise - $299/mo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Failed Attempt</label>
+                <select id="attempt">
+                    <option value="1">1st attempt failed</option>
+                    <option value="2">2nd attempt failed</option>
+                    <option value="3">3rd attempt failed</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="generateEmail()"><span>✨</span> Generate Recovery Email</button>
+            <button class="btn btn-secondary" onclick="sendEmail()">📤 Send Email</button>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header"><h2>Dunning Email</h2></div>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="setAttempt(1)">😊 Friendly</button>
+                <button class="quick-btn" onclick="setAttempt(2)">⚠️ Urgent</button>
+                <button class="quick-btn" onclick="setAttempt(3)">🚨 Final</button>
+                <button class="quick-btn" onclick="copyEmail()">📋 Copy</button>
+            </div>
+            <div id="emailPreview">
+                <div class="empty-state"><p>Fill in details and generate email</p></div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"><span>✓</span><span id="toastMessage">Success!</span></div>
+
+    <script>
+        const API = window.location.origin;
+        let currentData = null;
+
+        function showToast(m) {
+            document.getElementById('toastMessage').textContent = m;
+            document.getElementById('toast').classList.add('show');
+            setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+        }
+
+        function setAttempt(n) { document.getElementById('attempt').value = n; generateEmail(); }
+
+        async function generateEmail() {
+            const data = {
+                name: document.getElementById('name').value || 'Customer',
+                plan: document.getElementById('plan').value,
+                attempt: document.getElementById('attempt').value
+            };
+            const res = await fetch(`${API}/api/email-preview?name=${encodeURIComponent(data.name)}&plan=${data.plan}&attempt=${data.attempt}`);
+            currentData = await res.json();
+            
+            document.getElementById('emailPreview').innerHTML = `
+                <div class="email-meta">
+                    <div class="email-meta-item"><span class="email-meta-label">Subject:</span><span>${currentData.subject}</span></div>
+                    <div class="email-meta-item"><span class="email-meta-label">Stage:</span><span>${currentData.recovery}% recovery rate</span></div>
+                </div>
+                <div class="email-body">${currentData.body}</div>
+                <div class="recovery-stat">
+                    <div class="recovery-value">${currentData.recovery}%</div>
+                    <div class="recovery-label">Expected recovery rate at this stage</div>
+                </div>
+            `;
+        }
+
+        async function sendEmail() {
+            if (!currentData) { showToast('Generate email first'); return; }
+            const email = document.getElementById('email').value;
+            const res = await fetch(`${API}/api/payments`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email, name: document.getElementById('name').value,
+                    plan: document.getElementById('plan').value,
+                    attempt: document.getElementById('attempt').value,
+                    reason: 'failed'
+                })
+            });
+            const payment = await res.json();
+            await fetch(`${API}/api/payments/${payment.id}/send`, { method: 'POST' });
+            loadStats();
+            showToast('Email sent!');
+        }
+
+        function copyEmail() {
+            if (currentData) { navigator.clipboard.writeText(currentData.body); showToast('Copied!'); }
+        }
+
+        async function loadStats() {
+            const res = await fetch(`${API}/api/stats`);
+            const s = await res.json();
+            document.getElementById('stat-pending').textContent = s.pendingPayments;
+            document.getElementById('stat-sent').textContent = s.emailsSent;
+            document.getElementById('stat-recovery').textContent = s.avgRecovery + '%';
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

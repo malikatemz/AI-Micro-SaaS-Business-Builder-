@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Nudger - Automated Payment Reminders</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0a0a0f; --bg-secondary: #111118; --bg-card: #1a1a24;
+            --bg-input: #252532; --accent: #6366f1; --accent-hover: #818cf8;
+            --accent-glow: rgba(99, 102, 241, 0.2); --success: #10b981;
+            --warning: #f59e0b; --danger: #ef4444; --text: #ffffff;
+            --text-secondary: #9ca3af; --text-muted: #6b7280; --border: rgba(255, 255, 255, 0.08);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text); min-height: 100vh; }
+        header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--success), #059669); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .logo-text { font-size: 1.25rem; font-weight: 700; }
+        .logo-text span { background: linear-gradient(135deg, var(--success), #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stats-bar { background: var(--bg-secondary); padding: 1rem 2rem; border-bottom: 1px solid var(--border); }
+        .stats-content { max-width: 1400px; margin: 0 auto; display: flex; gap: 3rem; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--success), #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .main { max-width: 1400px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 400px 1fr; gap: 2rem; }
+        @media (max-width: 1024px) { .main { grid-template-columns: 1fr; } }
+        .form-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; height: fit-content; position: sticky; top: 100px; }
+        .panel-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .panel-header h2 { font-size: 1.1rem; font-weight: 600; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; font-family: inherit; transition: all 0.2s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--success); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .btn { padding: 0.875rem 1.5rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, var(--success), #059669); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3); }
+        .btn-secondary { background: var(--bg-input); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--bg-card); border-color: var(--success); }
+        .btn-sm { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+        .invoice-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+        .invoice-header { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
+        .invoice-header h2 { font-size: 1rem; font-weight: 600; }
+        .invoice-actions { display: flex; gap: 0.5rem; }
+        .invoice-list { max-height: 300px; overflow-y: auto; padding: 1rem; }
+        .invoice-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg-input); border-radius: 10px; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+        .invoice-item:hover { background: var(--bg-card); }
+        .invoice-item.selected { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        .invoice-info { flex: 1; }
+        .invoice-client { font-weight: 600; font-size: 0.95rem; }
+        .invoice-details { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .invoice-amount { font-size: 1.1rem; font-weight: 700; color: var(--success); }
+        .tag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 500; }
+        .tag-sent { background: var(--accent-glow); color: var(--accent); }
+        .tag-friendly { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .tag-followup { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .tag-final { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .quick-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 1rem; background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
+        .quick-btn { padding: 0.5rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-secondary); font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+        .quick-btn:hover { background: var(--success); color: white; border-color: var(--success); }
+        .email-preview { padding: 1.5rem; }
+        .email-meta { background: var(--bg-input); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; }
+        .email-meta-item { display: flex; gap: 0.75rem; margin-bottom: 0.5rem; font-size: 0.85rem; }
+        .email-meta-label { color: var(--text-muted); }
+        .email-body { font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.8; color: var(--text-secondary); white-space: pre-wrap; background: var(--bg-primary); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border); min-height: 200px; }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; background: var(--bg-card); border: 1px solid var(--success); border-radius: 10px; display: flex; align-items: center; gap: 0.75rem; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; text-align: center; color: var(--text-muted); }
+        .empty-state .icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5; }
+        .section-divider { padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+        .section-divider h3 { font-size: 0.9rem; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">💰</div>
+                <div class="logo-text">Invoice <span>Nudger</span></div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem;">Automated Payment Reminders</div>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stats-content">
+            <div class="stat">
+                <div class="stat-value" id="stat-total">$0</div>
+                <div class="stat-label">Total Outstanding</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="stat-count">0</div>
+                <div class="stat-label">Invoices</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="stat-sent">0</div>
+                <div class="stat-label">Reminders Sent</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">$19-49</div>
+                <div class="stat-label">Price/mo</div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="form-panel">
+            <div class="panel-header">
+                <h2>Add Invoice</h2>
+            </div>
+
+            <div class="form-group">
+                <label>Client Name</label>
+                <input type="text" id="client" placeholder="Acme Corporation">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Amount ($)</label>
+                    <input type="number" id="amount" placeholder="2500" value="2500">
+                </div>
+                <div class="form-group">
+                    <label>Client Type</label>
+                    <select id="clientType">
+                        <option value="freelancer">Freelancer</option>
+                        <option value="agency">Agency</option>
+                        <option value="consultant">Consultant</option>
+                        <option value="saas">SaaS</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Invoice Date</label>
+                    <input type="date" id="invoiceDate">
+                </div>
+                <div class="form-group">
+                    <label>Due Date</label>
+                    <input type="date" id="dueDate">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="addInvoice()">
+                <span>➕</span> Add to Queue
+            </button>
+
+            <div class="section-divider" style="margin-top: 1.5rem;">
+                <h3>Invoice Queue</h3>
+            </div>
+
+            <div class="invoice-list" id="invoiceList">
+                <div class="empty-state"><div class="icon">📋</div><p>No invoices yet</p></div>
+            </div>
+        </div>
+
+        <div class="invoice-panel">
+            <div class="invoice-header">
+                <h2>Reminder Sequence</h2>
+                <div class="invoice-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="copyEmail()">📋 Copy</button>
+                    <button class="btn btn-secondary btn-sm" onclick="sendEmail()">📤 Send</button>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="previewEmail(0)">📅 Day 1 - Friendly</button>
+                <button class="quick-btn" onclick="previewEmail(7)">📅 Day 7 - Follow-up</button>
+                <button class="quick-btn" onclick="previewEmail(14)">📅 Day 14 - Firm</button>
+                <button class="quick-btn" onclick="previewEmail(30)">📅 Day 30 - Final</button>
+            </div>
+
+            <div class="email-preview" id="emailPreview">
+                <div class="empty-state"><div class="icon">📧</div><p>Select an invoice and reminder stage</p></div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"><span>✓</span><span id="toastMessage">Success!</span></div>
+
+    <script>
+        const API_URL = window.location.origin;
+        let invoices = [];
+        let selectedInvoice = null;
+        let currentStage = 0;
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function loadStats() {
+            fetch(`${API_URL}/api/stats`).then(r => r.json()).then(stats => {
+                document.getElementById('stat-total').textContent = '$' + (stats.totalOutstanding || 0).toLocaleString();
+                document.getElementById('stat-count').textContent = stats.totalInvoices || 0;
+                document.getElementById('stat-sent').textContent = stats.remindersSent || 0;
+            });
+        }
+
+        function loadInvoices() {
+            fetch(`${API_URL}/api/invoices`).then(r => r.json()).then(data => {
+                invoices = data;
+                renderInvoices();
+            });
+        }
+
+        function renderInvoices() {
+            const list = document.getElementById('invoiceList');
+            if (invoices.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No invoices</p></div>';
+                return;
+            }
+            const stages = ['Sent', 'Friendly', 'Follow-up', 'Final'];
+            const tags = ['', 'tag-friendly', 'tag-followup', 'tag-final'];
+            list.innerHTML = invoices.map(inv => `
+                <div class="invoice-item ${selectedInvoice?.id === inv.id ? 'selected' : ''}" onclick="selectInvoice('${inv.id}')">
+                    <div class="invoice-info">
+                        <div class="invoice-client">${inv.client}</div>
+                        <div class="invoice-details">Due: ${inv.due_date} • ${inv.client_type}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="invoice-amount">$${inv.amount.toLocaleString()}</div>
+                        <span class="tag ${tags[inv.stage] || 'tag-sent'}">${stages[inv.stage] || 'Sent'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectInvoice(id) {
+            selectedInvoice = invoices.find(i => i.id === id);
+            renderInvoices();
+            if (selectedInvoice) previewEmail(currentStage);
+        }
+
+        async function addInvoice() {
+            const client = document.getElementById('client').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (!client || !amount) { showToast('Fill all fields'); return; }
+
+            const data = {
+                client, amount,
+                invoiceDate: document.getElementById('invoiceDate').value,
+                dueDate: document.getElementById('dueDate').value,
+                clientType: document.getElementById('clientType').value
+            };
+
+            await fetch(`${API_URL}/api/invoices`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            document.getElementById('client').value = '';
+            document.getElementById('amount').value = '2500';
+            loadInvoices();
+            loadStats();
+            showToast('Invoice added!');
+        }
+
+        async function previewEmail(stage) {
+            currentStage = stage;
+            if (!selectedInvoice) { showToast('Select an invoice first'); return; }
+
+            const res = await fetch(`${API_URL}/api/email-preview?stage=${stage}&client=${encodeURIComponent(selectedInvoice.client)}&amount=${selectedInvoice.amount}`);
+            const email = await res.json();
+
+            document.getElementById('emailPreview').innerHTML = `
+                <div class="email-meta">
+                    <div class="email-meta-item"><span class="email-meta-label">To:</span><span>${selectedInvoice.client}</span></div>
+                    <div class="email-meta-item"><span class="email-meta-label">Subject:</span><span>${email.subject}</span></div>
+                    <div class="email-meta-item"><span class="email-meta-label">Tone:</span><span>${stage === 0 ? 'Friendly' : stage === 7 ? 'Follow-up' : stage === 14 ? 'Firm' : 'Final'}</span></div>
+                </div>
+                <div class="email-body">${email.body}</div>
+            `;
+        }
+
+        async function sendEmail() {
+            if (!selectedInvoice) { showToast('Select an invoice first'); return; }
+            await fetch(`${API_URL}/api/invoices/${selectedInvoice.id}/send`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ stage: currentStage })
+            });
+            loadInvoices();
+            loadStats();
+            showToast('Email sent!');
+        }
+
+        function copyEmail() {
+            const body = document.querySelector('.email-body')?.textContent;
+            if (body) { navigator.clipboard.writeText(body); showToast('Copied!'); }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            const due = new Date(Date.now() + 30 * 864e5).toISOString().split('T')[0];
+            document.getElementById('invoiceDate').value = today;
+            document.getElementById('dueDate').value = due;
+            loadStats();
+            loadInvoices();
+        });
+    </script>
+</body>
+</html>

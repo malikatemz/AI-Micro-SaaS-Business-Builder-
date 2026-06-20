@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Notes - Action Item Extractor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg-primary: #0a0a0f; --bg-secondary: #111118; --bg-card: #1a1a24; --bg-input: #252532; --accent: #f59e0b; --accent-hover: #d97706; --success: #10b981; --danger: #ef4444; --text: #ffffff; --text-secondary: #9ca3af; --text-muted: #6b7280; --border: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text); min-height: 100vh; }
+        header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .logo-text { font-size: 1.25rem; font-weight: 700; }
+        .logo-text span { background: linear-gradient(135deg, var(--accent), #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stats-bar { background: var(--bg-secondary); padding: 1rem 2rem; border-bottom: 1px solid var(--border); }
+        .stats-content { max-width: 1400px; margin: 0 auto; display: flex; gap: 3rem; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .main { max-width: 1400px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 1024px) { .main { grid-template-columns: 1fr; } }
+        .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+        .panel-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .panel-header h2 { font-size: 1.1rem; font-weight: 600; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; font-family: inherit; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); }
+        .form-group textarea { min-height: 200px; resize: vertical; }
+        .btn { padding: 0.875rem 1.5rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent), #d97706); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3); }
+        .action-list { max-height: 500px; overflow-y: auto; }
+        .action-item { display: flex; gap: 0.75rem; padding: 1rem; background: var(--bg-input); border-radius: 10px; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.2s; }
+        .action-item:hover { background: var(--bg-card); }
+        .action-item.completed { opacity: 0.6; }
+        .action-item.completed .task-text { text-decoration: line-through; }
+        .checkbox { width: 24px; height: 24px; border: 2px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+        .action-item.completed .checkbox { background: var(--success); border-color: var(--success); color: white; }
+        .action-content { flex: 1; }
+        .task-text { font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .task-meta { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--text-muted); }
+        .tag { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 500; }
+        .tag-high { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .tag-medium { background: rgba(245, 158, 11, 0.2); color: var(--accent); }
+        .tag-low { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; background: var(--bg-card); border: 1px solid var(--success); border-radius: 10px; display: flex; align-items: center; gap: 0.75rem; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .quick-actions { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .quick-btn { padding: 0.5rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-secondary); font-size: 0.8rem; cursor: pointer; }
+        .quick-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; text-align: center; color: var(--text-muted); }
+        .empty-state .icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">📝</div>
+                <div class="logo-text">Meeting <span>Notes</span></div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem;">Extract Action Items Instantly</div>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stats-content">
+            <div class="stat"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Tasks</div></div>
+            <div class="stat"><div class="stat-value" id="stat-completed">0</div><div class="stat-label">Completed</div></div>
+            <div class="stat"><div class="stat-value">$29-79</div><div class="stat-label">Price/mo</div></div>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="panel">
+            <div class="panel-header"><h2>Meeting Transcript</h2></div>
+            <div class="form-group">
+                <label>Meeting Title</label>
+                <input type="text" id="title" placeholder="Q2 Planning Session">
+            </div>
+            <div class="form-group">
+                <label>Paste Transcript</label>
+                <textarea id="transcript" placeholder="Sarah: We need to redesign the checkout flow by Q2.
+John: I'll handle the user research by March 15th.
+Mike: I'll update the analytics dashboard next week.
+Lisa: I'll coordinate with the design team on the new branding."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="extractActions()"><span>✨</span> Extract Action Items</button>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Action Items</h2>
+                <div class="quick-actions">
+                    <button class="quick-btn" onclick="sortBy('owner')">👤 Owner</button>
+                    <button class="quick-btn" onclick="sortBy('priority')">🔥 Priority</button>
+                    <button class="quick-btn" onclick="exportCSV()">📥 CSV</button>
+                </div>
+            </div>
+            <div class="action-list" id="actionList">
+                <div class="empty-state"><div class="icon">✅</div><p>Enter a transcript and click "Extract"</p></div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"><span>✓</span><span id="toastMessage">Success!</span></div>
+
+    <script>
+        const API = window.location.origin;
+        let actions = [];
+
+        function showToast(m) {
+            document.getElementById('toastMessage').textContent = m;
+            document.getElementById('toast').classList.add('show');
+            setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+        }
+
+        async function extractActions() {
+            const title = document.getElementById('title').value || 'Untitled Meeting';
+            const transcript = document.getElementById('transcript').value;
+            if (!transcript) { showToast('Enter a transcript'); return; }
+
+            const res = await fetch(`${API}/api/meetings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, transcript })
+            });
+            const data = await res.json();
+            actions = data.actions;
+            renderActions();
+            loadStats();
+            showToast(`Extracted ${actions.length} action items!`);
+        }
+
+        function renderActions() {
+            const list = document.getElementById('actionList');
+            if (actions.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>No actions yet</p></div>';
+                return;
+            }
+            list.innerHTML = actions.map(a => `
+                <div class="action-item ${a.completed ? 'completed' : ''}" onclick="toggleAction('${a.id}')">
+                    <div class="checkbox">${a.completed ? '✓' : ''}</div>
+                    <div class="action-content">
+                        <div class="task-text">${a.task}</div>
+                        <div class="task-meta">
+                            <span>👤 ${a.owner}</span>
+                            <span>📅 ${a.deadline}</span>
+                            <span class="tag tag-${a.priority.toLowerCase()}">${a.priority}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function toggleAction(id) {
+            const action = actions.find(a => a.id === id);
+            if (action) {
+                action.completed = !action.completed;
+                await fetch(`${API}/api/actions/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ completed: action.completed })
+                });
+                renderActions();
+                loadStats();
+            }
+        }
+
+        function sortBy(by) {
+            if (by === 'owner') actions.sort((a, b) => a.owner.localeCompare(b.owner));
+            else if (by === 'priority') { const o = { High: 0, Medium: 1, Low: 2 }; actions.sort((a, b) => o[a.priority] - o[b.priority]); }
+            renderActions();
+        }
+
+        function exportCSV() {
+            const csv = 'Task,Owner,Deadline,Priority,Status\n' + actions.map(a => `"${a.task}","${a.owner}","${a.deadline}","${a.priority}","${a.completed ? 'Done' : 'Pending'}"`).join('\n');
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'action-items.csv'; a.click();
+            showToast('CSV exported!');
+        }
+
+        async function loadStats() {
+            const res = await fetch(`${API}/api/stats`);
+            const s = await res.json();
+            document.getElementById('stat-total').textContent = s.totalActions;
+            document.getElementById('stat-completed').textContent = s.completed;
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

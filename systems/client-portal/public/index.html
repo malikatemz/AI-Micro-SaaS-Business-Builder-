@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Portal Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg-primary: #0a0a0f; --bg-secondary: #111118; --bg-card: #1a1a24; --bg-input: #252532; --accent: #a855f7; --success: #10b981; --text: #ffffff; --text-secondary: #9ca3af; --text-muted: #6b7280; --border: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text); min-height: 100vh; }
+        header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent), #9333ea); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .logo-text { font-size: 1.25rem; font-weight: 700; }
+        .logo-text span { background: linear-gradient(135deg, var(--accent), #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stats-bar { background: var(--bg-secondary); padding: 1rem 2rem; border-bottom: 1px solid var(--border); }
+        .stats-content { max-width: 1400px; margin: 0 auto; display: flex; gap: 3rem; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .main { max-width: 1400px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 1024px) { .main { grid-template-columns: 1fr; } }
+        .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+        .panel-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .panel-header h2 { font-size: 1.1rem; font-weight: 600; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .form-group input { width: 100%; padding: 0.75rem 1rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; }
+        .form-group input:focus { outline: none; border-color: var(--accent); }
+        .color-picker { display: flex; align-items: center; gap: 0.75rem; }
+        .color-picker input[type="color"] { width: 50px; height: 40px; border: none; border-radius: 8px; cursor: pointer; }
+        .checkbox-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+        .checkbox-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+        .checkbox-item input { width: auto; accent-color: var(--accent); }
+        .btn { padding: 0.875rem 1.5rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent), #9333ea); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3); }
+        .preview { background: var(--bg-input); border-radius: 12px; padding: 1.5rem; }
+        .portal-header { display: flex; align-items: center; gap: 0.75rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+        .portal-logo { width: 40px; height: 40px; border-radius: 10px; }
+        .portal-name { font-weight: 600; font-size: 1.1rem; }
+        .portal-widgets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+        .portal-widget { background: var(--bg-secondary); border-radius: 10px; padding: 1rem; text-align: center; }
+        .portal-widget h4 { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.25rem; }
+        .portal-widget .value { font-size: 1.5rem; font-weight: 700; }
+        .portal-nav { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .portal-nav button { padding: 0.5rem 1rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); font-size: 0.8rem; cursor: pointer; }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; background: var(--bg-card); border: 1px solid var(--success); border-radius: 10px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; text-align: center; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">📁</div>
+                <div class="logo-text">Client <span>Portal</span></div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem;">Build Branded Client Portals</div>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stats-content">
+            <div class="stat"><div class="stat-value" id="stat-portals">0</div><div class="stat-label">Portals Created</div></div>
+            <div class="stat"><div class="stat-value" id="stat-clients">0</div><div class="stat-label">Clients Added</div></div>
+            <div class="stat"><div class="stat-value">$29-79</div><div class="stat-label">Price/mo</div></div>
+        </div>
+    </div>
+
+    <main class="main">
+        <div class="panel">
+            <div class="panel-header"><h2>Portal Configuration</h2></div>
+            
+            <div class="form-group">
+                <label>Agency/Brand Name</label>
+                <input type="text" id="name" placeholder="Acme Digital Agency">
+            </div>
+
+            <div class="form-group">
+                <label>Brand Color</label>
+                <div class="color-picker">
+                    <input type="color" id="color" value="#6366f1">
+                    <input type="text" id="colorHex" value="#6366f1" style="flex: 1;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Portal Domain</label>
+                <input type="text" id="domain" placeholder="portal.yourdomain.com">
+            </div>
+
+            <div class="form-group">
+                <label>Features</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" checked id="f1"><span>📁 File Sharing</span></label>
+                    <label class="checkbox-item"><input type="checkbox" checked id="f2"><span>📊 Projects</span></label>
+                    <label class="checkbox-item"><input type="checkbox" checked id="f3"><span>✅ Approvals</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="f4"><span>💰 Invoicing</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="f5"><span>💬 Chat</span></label>
+                    <label class="checkbox-item"><input type="checkbox" id="f6"><span>📈 Analytics</span></label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="generatePortal()"><span>✨</span> Generate Portal</button>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header"><h2>Live Preview</h2></div>
+            <div class="preview">
+                <div class="portal-header">
+                    <div class="portal-logo" id="previewLogo" style="background: #6366f1;"></div>
+                    <span class="portal-name" id="previewName">Your Agency</span>
+                </div>
+                <div class="portal-widgets" id="previewWidgets">
+                    <div class="portal-widget"><h4>Projects</h4><div class="value">0</div></div>
+                    <div class="portal-widget"><h4>Files</h4><div class="value">0</div></div>
+                    <div class="portal-widget"><h4>Approvals</h4><div class="value">0</div></div>
+                </div>
+                <div class="portal-nav">
+                    <button>Dashboard</button><button>Projects</button><button>Files</button><button>Settings</button>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="margin-top: 1rem;" onclick="deployPortal()"><span>🚀</span> Deploy Portal</button>
+        </div>
+    </main>
+
+    <div class="toast" id="toast"><span>✓</span><span id="toastMessage">Success!</span></div>
+
+    <script>
+        const API = window.location.origin;
+
+        function showToast(m) {
+            document.getElementById('toastMessage').textContent = m;
+            document.getElementById('toast').classList.add('show');
+            setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+        }
+
+        function updatePreview() {
+            document.getElementById('previewName').textContent = document.getElementById('name').value || 'Your Agency';
+            document.getElementById('previewLogo').style.background = document.getElementById('color').value;
+            document.getElementById('colorHex').value = document.getElementById('color').value;
+
+            const widgets = [];
+            if (document.getElementById('f1').checked) widgets.push({ name: 'Files', value: '0' });
+            if (document.getElementById('f2').checked) widgets.push({ name: 'Projects', value: '0' });
+            if (document.getElementById('f3').checked) widgets.push({ name: 'Approvals', value: '0' });
+            if (document.getElementById('f4').checked) widgets.push({ name: 'Invoices', value: '0' });
+            if (document.getElementById('f5').checked) widgets.push({ name: 'Messages', value: '0' });
+            if (document.getElementById('f6').checked) widgets.push({ name: 'Analytics', value: '0' });
+
+            document.getElementById('previewWidgets').innerHTML = widgets.length ? 
+                widgets.map(w => `<div class="portal-widget"><h4>${w.name}</h4><div class="value">${w.value}</div></div>`).join('') :
+                '<p style="color: var(--text-muted); text-align: center;">Select features</p>';
+        }
+
+        async function generatePortal() {
+            const features = {
+                files: document.getElementById('f1').checked,
+                projects: document.getElementById('f2').checked,
+                approvals: document.getElementById('f3').checked,
+                invoicing: document.getElementById('f4').checked,
+                chat: document.getElementById('f5').checked,
+                analytics: document.getElementById('f6').checked
+            };
+
+            await fetch(`${API}/api/portals`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: document.getElementById('name').value || 'My Portal',
+                    color: document.getElementById('color').value,
+                    domain: document.getElementById('domain').value,
+                    features
+                })
+            });
+
+            loadStats();
+            updatePreview();
+            showToast('Portal generated!');
+        }
+
+        function deployPortal() { showToast('Portal deployed! (Demo)'); }
+
+        async function loadStats() {
+            const res = await fetch(`${API}/api/stats`);
+            const s = await res.json();
+            document.getElementById('stat-portals').textContent = s.totalPortals;
+            document.getElementById('stat-clients').textContent = s.totalClients;
+        }
+
+        document.getElementById('color').addEventListener('input', updatePreview);
+        document.getElementById('name').addEventListener('input', updatePreview);
+        loadStats();
+    </script>
+</body>
+</html>
