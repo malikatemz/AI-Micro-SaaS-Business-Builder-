@@ -3,1546 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoloStack Pro - All-in-One AI SaaS Business Builder</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>SoloStack Pro - AI SaaS Business Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #111118;
-            --bg-card: #1a1a24;
-            --bg-card-hover: #222230;
-            --bg-input: #252532;
-            --accent: #6366f1;
-            --accent-hover: #818cf8;
-            --accent-glow: rgba(99, 102, 241, 0.2);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --text: #ffffff;
-            --text-secondary: #9ca3af;
-            --text-muted: #6b7280;
-            --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 255, 255, 0.15);
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text);
-            min-height: 100vh;
+        :root {
+            --bg-primary: #0a0a0f; --bg-secondary: #111118; --bg-card: #1a1a24;
+            --bg-input: #252532; --accent: #6366f1; --accent-hover: #818cf8;
+            --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
+            --purple: #a855f7; --blue: #0ea5e9; --green: #22c55e; --orange: #f97316;
+            --text: #ffffff; --text-secondary: #9ca3af; --text-muted: #6b7280;
+            --border: rgba(255, 255, 255, 0.08);
         }
-
-        .app-container { display: flex; min-height: 100vh; }
-
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--border); }
-
-        .logo { display: flex; align-items: center; gap: 0.75rem; }
-
-        .logo-icon {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .logo-text {
-            font-size: 1.2rem; font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .nav-section { padding: 1rem; }
-
-        .nav-title {
-            font-size: 0.65rem; text-transform: uppercase;
-            letter-spacing: 1.5px; color: var(--text-muted);
-            margin-bottom: 0.5rem; padding-left: 0.75rem;
-        }
-
-        .nav-item {
-            display: flex; align-items: center; gap: 0.75rem;
-            padding: 0.65rem 0.75rem; border-radius: 8px;
-            cursor: pointer; transition: all 0.2s;
-            color: var(--text-secondary); font-size: 0.85rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .nav-item:hover { background: var(--bg-card); color: var(--text); }
-        .nav-item.active { background: var(--accent-glow); color: var(--accent); }
-        .nav-item .icon { font-size: 1rem; width: 24px; text-align: center; }
-
-        /* Main Content */
-        .main-content { flex: 1; margin-left: 260px; padding: 2rem; }
-
-        .page-header { margin-bottom: 2rem; }
-        .page-header h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .page-header p { color: var(--text-secondary); }
-
-        /* Stats */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem; margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 1.25rem;
-        }
-
-        .stat-card .value {
-            font-size: 1.75rem; font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .stat-card .label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
-
-        /* Panels */
-        .panel-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        @media (max-width: 1200px) { .panel-layout { grid-template-columns: 1fr; } }
-
-        .panel {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 16px; padding: 1.5rem;
-        }
-
-        .panel-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 1.5rem; padding-bottom: 1rem;
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text); min-height: 100vh; }
+        
+        .hero {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            padding: 4rem 2rem;
+            text-align: center;
             border-bottom: 1px solid var(--border);
         }
-
-        .panel-header h2 { font-size: 1rem; font-weight: 600; }
-
-        .panel-header .badge {
-            font-size: 0.7rem; padding: 0.25rem 0.75rem;
-            background: var(--bg-input); border-radius: 100px;
-            color: var(--text-muted);
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
-        /* Forms */
-        .form-group { margin-bottom: 1rem; }
-
-        .form-group label {
-            display: block; font-size: 0.8rem;
-            color: var(--text-secondary); margin-bottom: 0.5rem;
+        .hero p { color: var(--text-secondary); font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem; }
+        .hero-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 2rem; }
+        .hero-stat-value { font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+        
+        .main { max-width: 1400px; margin: 0 auto; padding: 3rem 2rem; }
+        .section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; }
+        
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
         }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 0.75rem 1rem;
-            background: var(--bg-input); border: 1px solid var(--border);
-            border-radius: 8px; color: var(--text);
-            font-size: 0.9rem; font-family: inherit;
+        
+        .system-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .system-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .system-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-color);
+        }
+        .system-icon {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .system-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .system-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1rem; }
+        .system-meta { display: flex; gap: 1rem; font-size: 0.8rem; flex-wrap: wrap; }
+        .system-price { color: var(--success); font-weight: 600; }
+        .system-mrr { color: var(--accent); }
+        .system-port { color: var(--text-muted); }
+        
+        .launch-btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--accent); color: white;
+            border: none; border-radius: 8px;
+            font-size: 0.85rem; font-weight: 500;
+            cursor: pointer; margin-top: 1rem;
             transition: all 0.2s;
         }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none; border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
+        .launch-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        
+        .quick-launch {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 3rem;
         }
-
-        .form-group textarea {
-            min-height: 120px; resize: vertical;
-            font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
-        }
-
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-        /* Buttons */
-        .btn {
-            padding: 0.75rem 1.25rem; border-radius: 8px;
-            font-size: 0.875rem; font-weight: 500;
-            cursor: pointer; border: none; transition: all 0.2s;
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .btn-secondary { background: var(--bg-input); color: var(--text); border: 1px solid var(--border); }
-        .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--border-hover); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-sm { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
-        .btn-block { width: 100%; }
-
-        /* Quick Actions */
-        .quick-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-
+        .quick-launch h3 { margin-bottom: 1rem; }
+        .quick-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
         .quick-btn {
-            padding: 0.4rem 0.75rem; background: var(--bg-input);
-            border: 1px solid var(--border); border-radius: 6px;
-            color: var(--text-secondary); font-size: 0.75rem;
-            cursor: pointer; transition: all 0.2s;
-        }
-
-        .quick-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
-
-        /* Output */
-        .output-area {
-            background: var(--bg-primary); border: 1px solid var(--border);
-            border-radius: 10px; padding: 1rem;
-            min-height: 300px; max-height: 500px;
-            overflow-y: auto; font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem; line-height: 1.6;
-            white-space: pre-wrap; color: var(--text-secondary);
-        }
-
-        .output-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
-
-        /* Empty State */
-        .empty-state {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 3rem; text-align: center;
-            color: var(--text-muted);
-        }
-
-        .empty-state .icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5; }
-
-        /* Tags */
-        .tag {
-            display: inline-block; padding: 0.2rem 0.5rem;
-            border-radius: 4px; font-size: 0.7rem; font-weight: 500;
-        }
-
-        .tag-primary { background: var(--accent-glow); color: var(--accent); }
-        .tag-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-        .tag-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-        .tag-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-
-        /* Toast */
-        .toast {
-            position: fixed; bottom: 2rem; right: 2rem;
-            padding: 1rem 1.5rem; background: var(--bg-card);
-            border: 1px solid var(--success); border-radius: 10px;
-            display: flex; align-items: center; gap: 0.75rem;
-            transform: translateY(100px); opacity: 0;
-            transition: all 0.3s; z-index: 1000;
-        }
-
-        .toast.show { transform: translateY(0); opacity: 1; }
-
-        /* System Panels */
-        .system-panel { display: none; animation: fadeIn 0.3s ease; }
-        .system-panel.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Invoice List */
-        .invoice-list { max-height: 400px; overflow-y: auto; }
-
-        .invoice-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem; background: var(--bg-input);
-            border-radius: 8px; margin-bottom: 0.5rem;
-            cursor: pointer; transition: all 0.2s;
-        }
-
-        .invoice-item:hover { background: var(--bg-card-hover); }
-        .invoice-item.selected { border: 1px solid var(--accent); }
-
-        .invoice-info .client { font-weight: 600; font-size: 0.9rem; }
-        .invoice-info .details { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
-
-        /* Action Items */
-        .action-list { max-height: 400px; overflow-y: auto; }
-
-        .action-item {
-            display: flex; gap: 0.75rem; padding: 0.75rem;
-            background: var(--bg-input); border-radius: 8px;
-            margin-bottom: 0.5rem; cursor: pointer; transition: all 0.2s;
-        }
-
-        .action-item:hover { background: var(--bg-card-hover); }
-        .action-item.completed { opacity: 0.6; }
-        .action-item.completed .task-text { text-decoration: line-through; }
-
-        .action-checkbox {
-            width: 22px; height: 22px; border: 2px solid var(--border);
-            border-radius: 4px; display: flex; align-items: center;
-            justify-content: center; flex-shrink: 0; transition: all 0.2s;
-        }
-
-        .action-item.completed .action-checkbox {
-            background: var(--success); border-color: var(--success); color: white;
-        }
-
-        .action-content { flex: 1; }
-        .task-text { font-size: 0.9rem; margin-bottom: 0.35rem; }
-        .task-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: var(--text-muted); }
-
-        /* Job List */
-        .job-list { max-height: 400px; overflow-y: auto; }
-
-        .job-card {
+            padding: 1rem 1.5rem;
             background: var(--bg-input); border: 1px solid var(--border);
-            border-radius: 10px; padding: 1rem; margin-bottom: 0.75rem;
+            border-radius: 10px; color: var(--text);
+            font-size: 0.9rem; cursor: pointer;
+            transition: all 0.2s;
         }
-
-        .job-card-header {
-            display: flex; justify-content: space-between;
-            align-items: flex-start; margin-bottom: 0.5rem;
-        }
-
-        .job-title { font-weight: 600; font-size: 0.95rem; }
-        .job-company { font-size: 0.8rem; color: var(--text-muted); }
-        .job-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem; }
-
-        /* Portal Preview */
-        .portal-preview {
-            background: var(--bg-input); border-radius: 12px;
-            padding: 1rem; margin-top: 1rem;
-        }
-
-        .portal-header {
-            display: flex; align-items: center; gap: 0.75rem;
-            padding-bottom: 0.75rem; border-bottom: 1px solid var(--border);
-            margin-bottom: 0.75rem;
-        }
-
-        .portal-logo { width: 36px; height: 36px; border-radius: 8px; }
-        .portal-name { font-weight: 600; font-size: 0.9rem; }
-
-        .portal-widgets { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
-
-        .portal-widget {
-            background: var(--bg-secondary); border-radius: 8px; padding: 0.75rem;
-        }
-
-        .portal-widget h4 { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.25rem; }
-        .portal-widget .value { font-size: 1.1rem; font-weight: 600; }
-
-        /* Proposal Preview */
-        .proposal-preview {
-            background: white; color: #1a1a1a;
-            border-radius: 12px; padding: 2rem;
-        }
-
-        .proposal-preview h1 { font-size: 1.5rem; margin-bottom: 0.25rem; color: #1a1a1a; }
-        .proposal-preview .subtitle { color: #666; margin-bottom: 1.5rem; font-size: 0.9rem; }
-        .proposal-preview .section { margin-bottom: 1.25rem; }
-        .proposal-preview .section h2 { font-size: 0.9rem; color: #333; margin-bottom: 0.5rem; font-weight: 600; }
-        .proposal-preview ul { margin-left: 1.25rem; font-size: 0.85rem; }
-        .proposal-preview li { margin-bottom: 0.25rem; }
-        .proposal-preview .price { font-size: 2rem; font-weight: 700; color: var(--accent); }
-        .proposal-preview .signature { border-top: 1px dashed #ccc; padding-top: 1rem; margin-top: 1.5rem; font-size: 0.85rem; color: #666; }
-
-        /* Tabs */
-        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-
-        .tab {
-            padding: 0.5rem 1rem; background: transparent; border: none;
-            color: var(--text-secondary); font-size: 0.85rem;
-            cursor: pointer; border-radius: 6px 6px 0 0; transition: all 0.2s;
-        }
-
-        .tab:hover { color: var(--text); background: var(--bg-input); }
-        .tab.active { color: var(--accent); background: var(--accent-glow); }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* Checkbox Group */
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-
-        .checkbox-item {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.5rem 0.75rem; background: var(--bg-input);
-            border: 1px solid var(--border); border-radius: 6px;
-            cursor: pointer; font-size: 0.8rem; transition: all 0.2s;
-        }
-
-        .checkbox-item:hover { border-color: var(--accent); }
-        .checkbox-item input { width: auto; accent-color: var(--accent); }
-
-        /* Color Picker */
-        .color-picker { display: flex; align-items: center; gap: 0.5rem; }
-        .color-picker input[type="color"] { width: 40px; height: 36px; border: none; border-radius: 6px; cursor: pointer; }
-
-        /* Saved Items */
-        .saved-list { max-height: 300px; overflow-y: auto; }
-
-        .saved-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0.75rem; background: var(--bg-input);
-            border-radius: 8px; margin-bottom: 0.5rem;
-        }
-
-        .saved-item-info { flex: 1; }
-        .saved-item-title { font-size: 0.85rem; font-weight: 500; }
-        .saved-item-date { font-size: 0.75rem; color: var(--text-muted); }
-
+        .quick-btn:hover { border-color: var(--accent); background: var(--bg-card); }
+        
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: 3rem; }
+        
         @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 1rem; }
-            .panel-layout { grid-template-columns: 1fr; }
-            .form-row { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2rem; }
+            .hero-stats { flex-direction: column; gap: 1rem; }
+            .systems-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <div class="logo-icon">⚡</div>
-                    <span class="logo-text">SoloStack Pro</span>
-                </div>
+    <div class="hero">
+        <h1>SoloStack Pro</h1>
+        <p>7 Full-Stack AI SaaS Business Tools. Each system is production-ready with Node.js backend, SQLite database, and modern frontend.</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-value">$24K-$105K</div>
+                <div class="hero-stat-label">Total MRR Potential</div>
             </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Dashboard</div>
-                <div class="nav-item active" onclick="showSystem(null)">
-                    <span class="icon">🏠</span><span>Overview</span>
-                </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">7</div>
+                <div class="hero-stat-label">Full-Stack Systems</div>
             </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Content Tools</div>
-                <div class="nav-item" onclick="showSystem('seo')">
-                    <span class="icon">📊</span><span>SEO Brief Builder</span>
-                </div>
-                <div class="nav-item" onclick="showSystem('proposal')">
-                    <span class="icon">✍️</span><span>Proposal Generator</span>
-                </div>
-                <div class="nav-item" onclick="showSystem('jobs')">
-                    <span class="icon">💼</span><span>Job Board</span>
-                </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">$200</div>
+                <div class="hero-stat-label">Startup Cost</div>
             </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Business Tools</div>
-                <div class="nav-item" onclick="showSystem('invoice')">
-                    <span class="icon">💰</span><span>Invoice Nudger</span>
-                </div>
-                <div class="nav-item" onclick="showSystem('payments')">
-                    <span class="icon">🔄</span><span>Payment Recovery</span>
-                </div>
-                <div class="nav-item" onclick="showSystem('portal')">
-                    <span class="icon">📁</span><span>Client Portal</span>
-                </div>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Productivity</div>
-                <div class="nav-item" onclick="showSystem('meetings')">
-                    <span class="icon">📝</span><span>Meeting Notes</span>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <!-- OVERVIEW DASHBOARD -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <div id="overview-panel" class="system-panel active">
-                <div class="page-header">
-                    <h1>🚀 Welcome to SoloStack Pro</h1>
-                    <p>All-in-one AI SaaS business builder with 7 powerful tools</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="value">$5K</div><div class="label">Avg. MRR Potential</div></div>
-                    <div class="stat-card"><div class="value">80%</div><div class="label">Profit Margins</div></div>
-                    <div class="stat-card"><div class="value">7</div><div class="label">Business Tools</div></div>
-                    <div class="stat-card"><div class="value">$200</div><div class="label">Startup Cost</div></div>
-                </div>
-
-                <div class="panel-layout">
-                    <div class="panel">
-                        <div class="panel-header"><h2>Quick Start</h2></div>
-                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Select a tool from the sidebar to get started:</p>
-                        <div style="display: grid; gap: 0.75rem;">
-                            <div style="display: flex; gap: 0.75rem; align-items: center;"><span>📊</span><span style="font-size: 0.9rem;">SEO Brief Builder - Generate content briefs</span></div>
-                            <div style="display: flex; gap: 0.75rem; align-items: center;"><span>💰</span><span style="font-size: 0.9rem;">Invoice Nudger - Automate payment reminders</span></div>
-                            <div style="display: flex; gap: 0.75rem; align-items: center;"><span>📝</span><span style="font-size: 0.9rem;">Meeting Notes - Extract action items</span></div>
-                            <div style="display: flex; gap: 0.75rem; align-items: center;"><span>🔄</span><span style="font-size: 0.9rem;">Payment Recovery - Recover failed payments</span></div>
-                            <div style="display: flex; gap: 0.75rem; align-items: center;"><span>📁</span><span style="font-size: 0.9rem;">Client Portal - Build branded portals</span></div>
-                            <div style="display: flex; gap: 0.75rem; align-items: center;"><span>✍️</span><span style="font-size: 0.9rem;">Proposal Generator - Create proposals fast</span></div>
-                            <div style="display: flex; gap: 0.75rem; align-items: center;"><span>💼</span><span style="font-size: 0.9rem;">Job Board - Create niche job boards</span></div>
-                        </div>
-                    </div>
-                    <div class="panel">
-                        <div class="panel-header"><h2>Recent Activity</h2><span class="badge">Last 7 days</span></div>
-                        <div id="recent-activity">
-                            <div class="empty-state"><div class="icon">📋</div><p>No recent activity yet.<br>Start using the tools to see your history.</p></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <!-- SEO BRIEF BUILDER SYSTEM -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <div id="seo-panel" class="system-panel">
-                <div class="page-header">
-                    <h1>📊 AI SEO Brief Builder</h1>
-                    <p>Generate structured SEO content briefs with competitor analysis, headings, and FAQs</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="value">$49-99</div><div class="label">Price/mo</div></div>
-                    <div class="stat-card"><div class="value">2 min</div><div class="label">Generate Time</div></div>
-                    <div class="stat-card"><div class="value" id="seo-count">0</div><div class="label">Briefs Created</div></div>
-                </div>
-
-                <div class="panel-layout">
-                    <div class="panel">
-                        <div class="panel-header"><h2>Brief Configuration</h2></div>
-
-                        <div class="tabs">
-                            <button class="tab active" onclick="switchTab(this, 'seo-basic')">Basic</button>
-                            <button class="tab" onclick="switchTab(this, 'seo-advanced')">Advanced</button>
-                            <button class="tab" onclick="switchTab(this, 'seo-saved')">Saved</button>
-                        </div>
-
-                        <div id="seo-basic" class="tab-content active">
-                            <div class="form-group">
-                                <label>Target Industry</label>
-                                <select id="seoIndustry">
-                                    <option value="dentists">Dentists / Dental Practices</option>
-                                    <option value="lawyers">Personal Injury Lawyers</option>
-                                    <option value="realestate">Real Estate Agents</option>
-                                    <option value="plumbers">Plumbing Services</option>
-                                    <option value="hvac">HVAC Companies</option>
-                                    <option value="roofers">Roofing Contractors</option>
-                                    <option value="accountants">Accountants / CPAs</option>
-                                    <option value="restaurants">Restaurants</option>
-                                    <option value="gyms">Gyms / Fitness Centers</option>
-                                    <option value="photographers">Photographers</option>
-                                </select>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Main Keyword</label>
-                                    <input type="text" id="seoKeyword" placeholder="e.g., teeth whitening cost">
-                                </div>
-                                <div class="form-group">
-                                    <label>Word Count</label>
-                                    <select id="seoWordCount">
-                                        <option value="1500">1,500</option>
-                                        <option value="2000" selected>2,000</option>
-                                        <option value="2500">2,500</option>
-                                        <option value="3000">3,000</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Competitor URL (optional)</label>
-                                <input type="text" id="seoCompetitor" placeholder="https://example.com/page">
-                            </div>
-                        </div>
-
-                        <div id="seo-advanced" class="tab-content">
-                            <div class="form-group">
-                                <label>Additional Instructions</label>
-                                <textarea id="seoNotes" placeholder="Any specific points to include..."></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Target Audience</label>
-                                <input type="text" id="seoAudience" placeholder="e.g., Busy professionals aged 30-45">
-                            </div>
-                        </div>
-
-                        <div id="seo-saved" class="tab-content">
-                            <div class="saved-list" id="seoSavedList">
-                                <div class="empty-state"><div class="icon">💾</div><p>No saved briefs</p></div>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-primary btn-block" onclick="generateSEOBrief()" style="margin-top: 1rem;">
-                            <span>✨</span> Generate SEO Brief
-                        </button>
-                    </div>
-
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h2>Generated Brief</h2>
-                            <span class="badge" id="seo-length">0 chars</span>
-                        </div>
-                        <div class="quick-actions">
-                            <button class="quick-btn" onclick="copyOutput('seoOutput')">📋 Copy</button>
-                            <button class="quick-btn" onclick="downloadSEOBrief()">📥 Download</button>
-                            <button class="quick-btn" onclick="saveSEOBrief()">💾 Save</button>
-                            <button class="quick-btn" onclick="clearSEOBrief()">🗑️ Clear</button>
-                        </div>
-                        <div class="output-area" id="seoOutput">
-                            <div class="empty-state"><div class="icon">📝</div><p>Fill in the form and click "Generate"</p></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <!-- INVOICE NUDGER SYSTEM -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <div id="invoice-panel" class="system-panel">
-                <div class="page-header">
-                    <h1>💰 Late Invoice Nudger</h1>
-                    <p>Automated payment reminder sequences for overdue invoices</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="value">$19-49</div><div class="label">Price/mo</div></div>
-                    <div class="stat-card"><div class="value" id="invoice-total">$0</div><div class="label">Total Outstanding</div></div>
-                    <div class="stat-card"><div class="value" id="invoice-count-display">0</div><div class="label">Invoices</div></div>
-                </div>
-
-                <div class="panel-layout">
-                    <div class="panel">
-                        <div class="panel-header"><h2>Add Invoice</h2></div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Client Name</label>
-                                <input type="text" id="invoiceClient" placeholder="Acme Corporation">
-                            </div>
-                            <div class="form-group">
-                                <label>Amount ($)</label>
-                                <input type="number" id="invoiceAmount" placeholder="2500" value="2500">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Invoice Date</label>
-                                <input type="date" id="invoiceDate">
-                            </div>
-                            <div class="form-group">
-                                <label>Due Date</label>
-                                <input type="date" id="invoiceDueDate">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Client Type</label>
-                            <select id="invoiceClientType">
-                                <option value="freelancer">Freelancer</option>
-                                <option value="agency">Agency</option>
-                                <option value="consultant">Consultant</option>
-                                <option value="saas">SaaS Company</option>
-                            </select>
-                        </div>
-
-                        <button class="btn btn-primary btn-block" onclick="addInvoice()" style="margin-bottom: 1.5rem;">
-                            <span>➕</span> Add to Queue
-                        </button>
-
-                        <div class="panel-header">
-                            <h2>Invoice Queue</h2>
-                            <span class="badge" id="queue-count">0 invoices</span>
-                        </div>
-                        <div class="invoice-list" id="invoiceList">
-                            <div class="empty-state"><div class="icon">📋</div><p>No invoices in queue</p></div>
-                        </div>
-                    </div>
-
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h2>Reminder Sequence</h2>
-                            <span class="badge" id="nudge-info">Select invoice</span>
-                        </div>
-
-                        <div class="quick-actions">
-                            <button class="quick-btn" onclick="showNudge(0)">📅 Day 1 - Friendly</button>
-                            <button class="quick-btn" onclick="showNudge(7)">📅 Day 7 - Follow-up</button>
-                            <button class="quick-btn" onclick="showNudge(14)">📅 Day 14 - Firm</button>
-                            <button class="quick-btn" onclick="showNudge(30)">📅 Day 30 - Final</button>
-                        </div>
-
-                        <div class="output-area" id="nudgeOutput" style="min-height: 250px;">
-                            <div class="empty-state"><div class="icon">📧</div><p>Add an invoice and select a reminder stage</p></div>
-                        </div>
-
-                        <div class="output-actions">
-                            <button class="btn btn-secondary btn-sm" onclick="copyOutput('nudgeOutput')">📋 Copy</button>
-                            <button class="btn btn-secondary btn-sm" onclick="sendEmail()">📤 Send Now</button>
-                            <button class="btn btn-primary btn-sm" onclick="scheduleReminder()">⏰ Schedule</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <!-- MEETING NOTES SYSTEM -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <div id="meetings-panel" class="system-panel">
-                <div class="page-header">
-                    <h1>📝 Meeting Notes → Action Items</h1>
-                    <p>Extract tasks, owners, and deadlines from meeting transcripts</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="value">$29-79</div><div class="label">Price/mo</div></div>
-                    <div class="stat-card"><div class="value" id="meeting-count">0</div><div class="label">Tasks Extracted</div></div>
-                    <div class="stat-card"><div class="value" id="meeting-completed">0</div><div class="label">Completed</div></div>
-                </div>
-
-                <div class="panel-layout">
-                    <div class="panel">
-                        <div class="panel-header"><h2>Meeting Transcript</h2></div>
-
-                        <div class="form-group">
-                            <label>Meeting Title</label>
-                            <input type="text" id="meetingTitle" placeholder="Q2 Planning Session">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Paste Transcript</label>
-                            <textarea id="meetingTranscript" placeholder="Paste your meeting notes here...">Sarah: We need to redesign the checkout flow by Q2.
-John: I'll handle the user research by March 15th.
-Sarah: John, can you also look at the mobile experience?
-Mike: I'll update the analytics dashboard next week.
-Sarah: Everyone should review the competitor analysis doc.
-John: I'll prepare the presentation for the board meeting.</textarea>
-                        </div>
-
-                        <button class="btn btn-primary btn-block" onclick="extractActionItems()">
-                            <span>✨</span> Extract Action Items
-                        </button>
-                    </div>
-
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h2>Action Items</h2>
-                            <span class="badge" id="action-count">0 tasks</span>
-                        </div>
-
-                        <div class="quick-actions">
-                            <button class="quick-btn" onclick="sortActions('owner')">👤 By Owner</button>
-                            <button class="quick-btn" onclick="sortActions('priority')">🔥 By Priority</button>
-                            <button class="quick-btn" onclick="sortActions('deadline')">📅 By Deadline</button>
-                            <button class="quick-btn" onclick="clearActions()">🗑️ Clear</button>
-                        </div>
-
-                        <div class="action-list" id="actionList">
-                            <div class="empty-state"><div class="icon">✅</div><p>Enter a meeting transcript to extract action items</p></div>
-                        </div>
-
-                        <div class="output-actions" id="actionButtons" style="display: none;">
-                            <button class="btn btn-secondary btn-sm" onclick="copyActions()">📋 Copy</button>
-                            <button class="btn btn-secondary btn-sm" onclick="exportActionsCSV()">📥 CSV</button>
-                            <button class="btn btn-primary btn-sm" onclick="createReminders()">⏰ Reminders</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <!-- PAYMENT RECOVERY SYSTEM -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <div id="payments-panel" class="system-panel">
-                <div class="page-header">
-                    <h1>🔄 Subscription Payment Recovery</h1>
-                    <p>Recover failed payments with smart dunning email sequences</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="value">$49-99</div><div class="label">Price/mo</div></div>
-                    <div class="stat-card"><div class="value">85%</div><div class="label">Recovery Rate</div></div>
-                    <div class="stat-card"><div class="value" id="recovery-count">0</div><div class="label">Emails Sent</div></div>
-                </div>
-
-                <div class="panel-layout">
-                    <div class="panel">
-                        <div class="panel-header"><h2>Failed Payment Details</h2></div>
-
-                        <div class="form-group">
-                            <label>Customer Email</label>
-                            <input type="email" id="paymentEmail" placeholder="customer@example.com">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Customer Name</label>
-                            <input type="text" id="paymentName" placeholder="John Smith">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Subscription Plan</label>
-                            <select id="paymentPlan">
-                                <option value="starter">Starter - $29/mo</option>
-                                <option value="pro">Pro - $79/mo</option>
-                                <option value="business">Business - $149/mo</option>
-                                <option value="enterprise">Enterprise - $299/mo</option>
-                            </select>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Failed Attempt</label>
-                                <select id="paymentAttempt">
-                                    <option value="1">1st attempt failed</option>
-                                    <option value="2">2nd attempt failed</option>
-                                    <option value="3">3rd attempt failed</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Failure Reason</label>
-                                <select id="paymentReason">
-                                    <option value="unknown">Unknown</option>
-                                    <option value="insufficient">Insufficient Funds</option>
-                                    <option value="expired">Card Expired</option>
-                                    <option value="declined">Card Declined</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-primary btn-block" onclick="generateRecoveryEmail()">
-                            <span>✨</span> Generate Recovery Email
-                        </button>
-                    </div>
-
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h2>Dunning Email</h2>
-                            <span class="badge" id="recovery-stage">Preview</span>
-                        </div>
-
-                        <div class="quick-actions">
-                            <button class="quick-btn" onclick="switchEmailTone('friendly')">😊 Friendly</button>
-                            <button class="quick-btn" onclick="switchEmailTone('urgent')">⚠️ Urgent</button>
-                            <button class="quick-btn" onclick="switchEmailTone('final')">🚨 Final</button>
-                        </div>
-
-                        <div class="output-area" id="recoveryOutput">
-                            <div class="empty-state"><div class="icon">💳</div><p>Fill in the details to generate a recovery email</p></div>
-                        </div>
-
-                        <div class="output-actions" id="recoveryActions" style="display: none;">
-                            <button class="btn btn-secondary btn-sm" onclick="copyOutput('recoveryOutput')">📋 Copy</button>
-                            <button class="btn btn-primary btn-sm" onclick="sendRecovery()">📤 Send</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <!-- CLIENT PORTAL BUILDER SYSTEM -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <div id="portal-panel" class="system-panel">
-                <div class="page-header">
-                    <h1>📁 Client Portal Builder</h1>
-                    <p>Create branded client portals with file sharing, project tracking, and approvals</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="value">$29-79</div><div class="label">Price/mo</div></div>
-                    <div class="stat-card"><div class="value" id="portal-count">0</div><div class="label">Portals Created</div></div>
-                </div>
-
-                <div class="panel-layout">
-                    <div class="panel">
-                        <div class="panel-header"><h2>Portal Configuration</h2></div>
-
-                        <div class="form-group">
-                            <label>Agency/Brand Name</label>
-                            <input type="text" id="portalName" placeholder="Acme Digital Agency">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Brand Color</label>
-                            <div class="color-picker">
-                                <input type="color" id="portalColor" value="#6366f1">
-                                <input type="text" id="portalColorHex" value="#6366f1" style="flex: 1;" onchange="document.getElementById('portalColor').value = this.value">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Features</label>
-                            <div class="checkbox-group">
-                                <label class="checkbox-item"><input type="checkbox" checked id="featureFiles">📁 File Sharing</label>
-                                <label class="checkbox-item"><input type="checkbox" checked id="featureProjects">📊 Project Tracking</label>
-                                <label class="checkbox-item"><input type="checkbox" checked id="featureApprovals">✅ Approvals</label>
-                                <label class="checkbox-item"><input type="checkbox" id="featureInvoicing">💰 Invoicing</label>
-                                <label class="checkbox-item"><input type="checkbox" id="featureChat">💬 Chat</label>
-                                <label class="checkbox-item"><input type="checkbox" id="featureAnalytics">📈 Analytics</label>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-primary btn-block" onclick="generatePortal()" style="margin-top: 1rem;">
-                            <span>✨</span> Generate Portal
-                        </button>
-                    </div>
-
-                    <div class="panel">
-                        <div class="panel-header"><h2>Portal Preview</h2><span class="badge">Live Preview</span></div>
-
-                        <div class="portal-preview" id="portalPreview">
-                            <div class="portal-header">
-                                <div class="portal-logo" style="background: #6366f1;"></div>
-                                <span class="portal-name">Your Agency</span>
-                            </div>
-                            <div class="portal-widgets" id="portalWidgets">
-                                <div class="portal-widget"><h4>Projects</h4><div class="value">0</div></div>
-                                <div class="portal-widget"><h4>Files</h4><div class="value">0</div></div>
-                            </div>
-                        </div>
-
-                        <div class="output-actions" style="margin-top: 1rem;">
-                            <button class="btn btn-secondary btn-sm" onclick="copyPortalCode()">📋 Copy Code</button>
-                            <button class="btn btn-primary btn-sm" onclick="deployPortal()">🚀 Deploy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <!-- PROPOSAL GENERATOR SYSTEM -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <div id="proposal-panel" class="system-panel">
-                <div class="page-header">
-                    <h1>✍️ AI Proposal Generator</h1>
-                    <p>Create professional project proposals with pricing and e-signature</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="value">$39-89</div><div class="label">Price/mo</div></div>
-                    <div class="stat-card"><div class="value" id="proposal-count">0</div><div class="label">Proposals Created</div></div>
-                </div>
-
-                <div class="panel-layout">
-                    <div class="panel">
-                        <div class="panel-header"><h2>Proposal Details</h2></div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Client Name</label>
-                                <input type="text" id="proposalClient" placeholder="Acme Corporation">
-                            </div>
-                            <div class="form-group">
-                                <label>Service Type</label>
-                                <select id="proposalService">
-                                    <option value="web">Website Development</option>
-                                    <option value="marketing">Digital Marketing</option>
-                                    <option value="branding">Branding & Design</option>
-                                    <option value="consulting">Consulting</option>
-                                    <option value="app">App Development</option>
-                                    <option value="seo">SEO Services</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Budget ($)</label>
-                                <input type="number" id="proposalBudget" value="5000">
-                            </div>
-                            <div class="form-group">
-                                <label>Timeline (weeks)</label>
-                                <input type="number" id="proposalTimeline" value="8">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Your Company</label>
-                            <input type="text" id="proposalCompany" placeholder="Your Company Inc">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Key Deliverables (one per line)</label>
-                            <textarea id="proposalDeliverables" placeholder="Custom website design&#10;Mobile responsive&#10;SEO optimization"></textarea>
-                        </div>
-
-                        <button class="btn btn-primary btn-block" onclick="generateProposal()">
-                            <span>✨</span> Generate Proposal
-                        </button>
-                    </div>
-
-                    <div class="panel">
-                        <div class="panel-header"><h2>Proposal Preview</h2><span class="badge" id="proposal-status">Draft</span></div>
-
-                        <div class="proposal-preview" id="proposalPreview">
-                            <h1>Project Proposal</h1>
-                            <div class="subtitle">For [Client Name] • [Date]</div>
-                            <div class="section"><h2>Project Overview</h2><p>Fill in the details to generate your proposal...</p></div>
-                        </div>
-
-                        <div class="output-actions">
-                            <button class="btn btn-secondary btn-sm" onclick="copyProposal()">📋 Copy</button>
-                            <button class="btn btn-primary btn-sm" onclick="sendProposal()">📤 Send to Client</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <!-- JOB BOARD SYSTEM -->
-            <!-- ═══════════════════════════════════════════════════════════════════════════ -->
-            <div id="jobs-panel" class="system-panel">
-                <div class="page-header">
-                    <h1>💼 Niche Job Board</h1>
-                    <p>Create specialized job boards for underserved vertical markets</p>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="value">$250</div><div class="label">Per Posting</div></div>
-                    <div class="stat-card"><div class="value" id="job-board-count">0</div><div class="label">Active Jobs</div></div>
-                </div>
-
-                <div class="panel-layout">
-                    <div class="panel">
-                        <div class="panel-header"><h2>Create Job Posting</h2></div>
-
-                        <div class="form-group">
-                            <label>Job Category</label>
-                            <select id="jobCategory">
-                                <option value="webflow">🌊 Webflow Developers</option>
-                                <option value="framer">🎨 Framer Designers</option>
-                                <option value="bubble">🫧 No-Code Developers</option>
-                                <option value="web3">⛓️ Web3 Engineers</option>
-                                <option value="ai">🤖 AI/ML Engineers</option>
-                                <option value="react">⚛️ React Developers</option>
-                                <option value="node">🟢 Node.js Developers</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Job Title</label>
-                            <input type="text" id="jobTitle" placeholder="Senior Webflow Designer">
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Company Name</label>
-                                <input type="text" id="jobCompany" placeholder="TechStartup Inc">
-                            </div>
-                            <div class="form-group">
-                                <label>Salary Range</label>
-                                <input type="text" id="jobSalary" placeholder="$80-120k">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Location</label>
-                            <select id="jobLocation">
-                                <option value="remote">🌍 Remote (Worldwide)</option>
-                                <option value="usa">🇺🇸 Remote (USA)</option>
-                                <option value="europe">🇪🇺 Remote (Europe)</option>
-                                <option value="onsite">📍 On-site</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Required Skills</label>
-                            <input type="text" id="jobSkills" placeholder="Webflow, Finsweet, Memberstack">
-                        </div>
-
-                        <button class="btn btn-primary btn-block" onclick="createJobPosting()">
-                            <span>✨</span> Create Job Board Page
-                        </button>
-                    </div>
-
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h2>Job Board</h2>
-                            <span class="badge" id="job-count-display">0 postings</span>
-                        </div>
-
-                        <div class="quick-actions">
-                            <button class="quick-btn" onclick="filterJobs('all')">All</button>
-                            <button class="quick-btn" onclick="filterJobs('remote')">Remote</button>
-                            <button class="quick-btn" onclick="filterJobs('salary')">High Salary</button>
-                        </div>
-
-                        <div class="output-area" id="jobOutput" style="min-height: 300px;">
-                            <div class="empty-state"><div class="icon">💼</div><p>Create a job posting to get started</p></div>
-                        </div>
-
-                        <div class="output-actions" id="jobActions" style="display: none;">
-                            <button class="btn btn-secondary btn-sm" onclick="copyJobBoard()">📋 Copy</button>
-                            <button class="btn btn-primary btn-sm" onclick="publishJobBoard()">🚀 Publish</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
 
-    <!-- Toast -->
-    <div class="toast" id="toast">
-        <span>✓</span>
-        <span id="toastMessage">Action completed!</span>
+    <div class="main">
+        <h2 class="section-title">🚀 All 7 Systems</h2>
+        
+        <div class="systems-grid">
+            <div class="system-card" style="--card-color: #6366f1;">
+                <div class="system-icon">📊</div>
+                <h3>SEO Brief Builder</h3>
+                <p>Generate structured SEO content briefs for any industry. Includes keyword research, competitor analysis, and full article structure.</p>
+                <div class="system-meta">
+                    <span class="system-price">$49-99/mo</span>
+                    <span class="system-mrr">MRR: $5K-20K</span>
+                    <span class="system-port">Port: 3001</span>
+                </div>
+                <button class="launch-btn" onclick="openSystem(3001)">🚀 Launch App</button>
+            </div>
+
+            <div class="system-card" style="--card-color: #10b981;">
+                <div class="system-icon">💰</div>
+                <h3>Invoice Nudger</h3>
+                <p>Automated payment reminder sequences for overdue invoices. 4-stage escalation from friendly to final notice.</p>
+                <div class="system-meta">
+                    <span class="system-price">$19-49/mo</span>
+                    <span class="system-mrr">MRR: $3K-15K</span>
+                    <span class="system-port">Port: 3002</span>
+                </div>
+                <button class="launch-btn" onclick="openSystem(3002)">🚀 Launch App</button>
+            </div>
+
+            <div class="system-card" style="--card-color: #f59e0b;">
+                <div class="system-icon">📝</div>
+                <h3>Meeting Notes</h3>
+                <p>Extract action items from meeting transcripts. Auto-detect owner, deadline, and priority. Export to CSV.</p>
+                <div class="system-meta">
+                    <span class="system-price">$29-79/mo</span>
+                    <span class="system-mrr">MRR: $5K-25K</span>
+                    <span class="system-port">Port: 3003</span>
+                </div>
+                <button class="launch-btn" onclick="openSystem(3003)">🚀 Launch App</button>
+            </div>
+
+            <div class="system-card" style="--card-color: #ef4444;">
+                <div class="system-icon">🔄</div>
+                <h3>Payment Recovery</h3>
+                <p>Recover failed payments with smart dunning email sequences. 3-stage recovery with up to 85% success rate.</p>
+                <div class="system-meta">
+                    <span class="system-price">$49-99/mo</span>
+                    <span class="system-mrr">MRR: $5K-20K</span>
+                    <span class="system-port">Port: 3004</span>
+                </div>
+                <button class="launch-btn" onclick="openSystem(3004)">🚀 Launch App</button>
+            </div>
+
+            <div class="system-card" style="--card-color: #a855f7;">
+                <div class="system-icon">📁</div>
+                <h3>Client Portal</h3>
+                <p>Build branded client portals with file sharing, project tracking, approvals, and analytics. White-label ready.</p>
+                <div class="system-meta">
+                    <span class="system-price">$29-79/mo</span>
+                    <span class="system-mrr">MRR: $3K-15K</span>
+                    <span class="system-port">Port: 3005</span>
+                </div>
+                <button class="launch-btn" onclick="openSystem(3005)">🚀 Launch App</button>
+            </div>
+
+            <div class="system-card" style="--card-color: #0ea5e9;">
+                <div class="system-icon">✍️</div>
+                <h3>Proposal Generator</h3>
+                <p>Create professional project proposals with pricing, timeline, and e-signature. 6 service types included.</p>
+                <div class="system-meta">
+                    <span class="system-price">$39-89/mo</span>
+                    <span class="system-mrr">MRR: $5K-20K</span>
+                    <span class="system-port">Port: 3006</span>
+                </div>
+                <button class="launch-btn" onclick="openSystem(3006)">🚀 Launch App</button>
+            </div>
+
+            <div class="system-card" style="--card-color: #22c55e;">
+                <div class="system-icon">💼</div>
+                <h3>Job Board</h3>
+                <p>Niche job board for vertical markets. Categories include Webflow, AI, React, No-Code, and more.</p>
+                <div class="system-meta">
+                    <span class="system-price">$250/post</span>
+                    <span class="system-mrr">MRR: $3K-10K</span>
+                    <span class="system-port">Port: 3007</span>
+                </div>
+                <button class="launch-btn" onclick="openSystem(3007)">🚀 Launch App</button>
+            </div>
+        </div>
+
+        <div class="quick-launch">
+            <h3>⚡ Quick Start</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Run all systems locally:</p>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="installAll()">📦 Install Dependencies</button>
+                <button class="quick-btn" onclick="startAll()">🚀 Start All Systems</button>
+                <button class="quick-btn" onclick="openDocs()">📚 View Documentation</button>
+            </div>
+        </div>
     </div>
+
+    <footer>
+        <p>SoloStack Pro • Built for African Founders • Target US/European Markets • Earn USD</p>
+    </footer>
 
     <script>
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // GLOBAL STATE
-        // ═══════════════════════════════════════════════════════════════════════════════
-        let invoices = [];
-        let actionItems = [];
-        let jobPostings = [];
-        let savedSEOBriefs = [];
-        let currentInvoice = null;
-
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // NAVIGATION
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function showSystem(system) {
-            document.querySelectorAll('.system-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if (system) {
-                document.getElementById(system + '-panel').classList.add('active');
-                document.querySelector('.nav-item[onclick*="' + system + '"]')?.classList.add('active');
-            } else {
-                document.getElementById('overview-panel').classList.add('active');
-                document.querySelector('.nav-item')?.classList.add('active');
-            }
+        function openSystem(port) {
+            window.open('http://localhost:' + port, '_blank');
         }
 
-        function switchTab(btn, tabId) {
-            const container = btn.closest('.panel');
-            container.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            container.querySelector('#' + tabId).classList.add('active');
+        function installAll() {
+            alert('Run this in terminal:\n\nfor dir in systems/*/; do (cd "$dir" && npm install); done');
         }
 
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // UTILITIES
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMessage').textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        function startAll() {
+            alert('Run this in terminal:\n\nnode start-all.js\n\nOr run individually:\ncd systems/seo-brief && npm start');
         }
 
-        function copyOutput(id) {
-            navigator.clipboard.writeText(document.getElementById(id).textContent);
-            showToast('Copied to clipboard!');
+        function openDocs() {
+            window.open('https://github.com/malikatemz/AI-Micro-SaaS-Business-Builder-', '_blank');
         }
-
-        function downloadFile(filename, content) {
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
-            a.download = filename;
-            a.click();
-        }
-
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // SEO BRIEF BUILDER
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function generateSEOBrief() {
-            const industry = document.getElementById('seoIndustry').value;
-            const keyword = document.getElementById('seoKeyword').value || 'target keyword';
-            const wordCount = parseInt(document.getElementById('seoWordCount').value);
-            const competitor = document.getElementById('seoCompetitor').value || 'Not provided';
-            const notes = document.getElementById('seoNotes').value || 'None';
-            const audience = document.getElementById('seoAudience').value || 'General audience';
-
-            const industries = {
-                dentists: { audience: 'General Dentists', problems: ['Low patient conversion', 'Insurance confusion', 'Fear of procedures'] },
-                lawyers: { audience: 'Personal Injury Lawyers', problems: ['Client intake efficiency', 'Case evaluation', 'Referral generation'] },
-                realestate: { audience: 'Residential Real Estate Agents', problems: ['Lead generation', 'Open house attendance', 'Client follow-up'] },
-                plumbers: { audience: 'Local Plumbing Services', problems: ['Emergency availability', 'Pricing transparency', 'Reviews management'] },
-                hvac: { audience: 'HVAC Companies', problems: ['Seasonal demand', 'Service agreements', 'AC repair urgency'] },
-                roofers: { audience: 'Roofing Contractors', problems: ['Storm damage claims', 'Free estimates', 'Warranty questions'] },
-                accountants: { audience: 'Accountants & CPAs', problems: ['Tax season overwhelm', 'Client retention', 'Service diversification'] },
-                restaurants: { audience: 'Restaurant Owners', problems: ['Online reviews', 'Food delivery', 'Local SEO'] },
-                gyms: { audience: 'Gyms & Fitness Centers', problems: ['Member retention', 'Personal training sales', 'Class bookings'] },
-                photographers: { audience: 'Photographers', problems: ['Portfolio visibility', 'Package pricing', 'Booking automation'] }
-            };
-
-            const data = industries[industry];
-            const brief = `═══════════════════════════════════════════════════════════════
-SEO CONTENT BRIEF: ${keyword.toUpperCase()}
-═══════════════════════════════════════════════════════════════
-
-📋 TARGET AUDIENCE: ${audience}
-
-📊 CONTENT SPECIFICATIONS
-   • Industry: ${data.audience}
-   • Word Count: ${wordCount.toLocaleString()} words
-   • Reading Level: Grade 8
-
-🎯 PRIMARY KEYWORD: ${keyword}
-   Secondary: ${keyword} cost, ${keyword} near me, best ${keyword}
-
-🔍 KEY PROBLEMS TO ADDRESS
-${data.problems.map((p, i) => '   ' + (i + 1) + '. ' + p).join('\n')}
-
-📝 RECOMMENDED STRUCTURE
-
-1. INTRODUCTION (10%) - ${Math.floor(wordCount * 0.1).toLocaleString()} words
-   • Hook with statistic or question
-   • Relate to reader's pain point
-
-2. WHAT IS [TOPIC]? (15%) - ${Math.floor(wordCount * 0.15).toLocaleString()} words
-   • Clear definition and misconceptions
-
-3. TOP BENEFITS (25%) - ${Math.floor(wordCount * 0.25).toLocaleString()} words
-${data.problems.map(p => '   • ' + p).join('\n')}
-
-4. HOW-TO GUIDE (25%) - ${Math.floor(wordCount * 0.25).toLocaleString()} words
-   • Step-by-step instructions
-
-5. FAQ SECTION (15%) - ${Math.floor(wordCount * 0.15).toLocaleString()} words
-   • 6-8 common questions
-
-6. CONCLUSION (10%) - ${Math.floor(wordCount * 0.1).toLocaleString()} words
-   • Summary and call to action
-
-🔗 COMPETITOR: ${competitor}
-📝 NOTES: ${notes}
-
-═══════════════════════════════════════════════════════════════`;
-
-            document.getElementById('seoOutput').textContent = brief;
-            document.getElementById('seo-length').textContent = brief.length + ' chars';
-            document.getElementById('seo-count').textContent = savedSEOBriefs.length + 1;
-            showToast('SEO Brief generated!');
-        }
-
-        function saveSEOBrief() {
-            savedSEOBriefs.push({
-                keyword: document.getElementById('seoKeyword').value || 'Untitled',
-                content: document.getElementById('seoOutput').textContent,
-                date: new Date().toLocaleDateString()
-            });
-            renderSavedBriefs();
-            showToast('Brief saved!');
-        }
-
-        function renderSavedBriefs() {
-            const list = document.getElementById('seoSavedList');
-            if (savedSEOBriefs.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="icon">💾</div><p>No saved briefs</p></div>';
-                return;
-            }
-            list.innerHTML = savedSEOBriefs.map((b, i) => 
-                '<div class="saved-item" onclick="loadSEOBrief(' + i + ')">' +
-                '<div class="saved-item-info"><div class="saved-item-title">' + b.keyword + '</div>' +
-                '<div class="saved-item-date">' + b.date + '</div></div>' +
-                '<button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); deleteSEOBrief(' + i + ')">🗑️</button></div>'
-            ).join('');
-        }
-
-        function loadSEOBrief(i) {
-            const b = savedSEOBriefs[i];
-            document.getElementById('seoOutput').textContent = b.content;
-            document.getElementById('seo-length').textContent = b.content.length + ' chars';
-            showToast('Brief loaded!');
-        }
-
-        function deleteSEOBrief(i) { savedSEOBriefs.splice(i, 1); renderSavedBriefs(); showToast('Brief deleted'); }
-        function downloadSEOBrief() { downloadFile('seo-brief.txt', document.getElementById('seoOutput').textContent); showToast('Downloaded!'); }
-        function clearSEOBrief() {
-            document.getElementById('seoOutput').innerHTML = '<div class="empty-state"><div class="icon">📝</div><p>Fill in the form and click "Generate"</p></div>';
-            document.getElementById('seo-length').textContent = '0 chars';
-        }
-
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // INVOICE NUDGER
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function addInvoice() {
-            const client = document.getElementById('invoiceClient').value;
-            const amount = parseInt(document.getElementById('invoiceAmount').value) || 0;
-            if (!client || !amount) { showToast('Fill client name and amount'); return; }
-
-            invoices.push({
-                id: Date.now(), client, amount,
-                date: document.getElementById('invoiceDate').value || new Date().toISOString().split('T')[0],
-                dueDate: document.getElementById('invoiceDueDate').value || new Date(Date.now() + 30 * 864e5).toISOString().split('T')[0],
-                type: document.getElementById('invoiceClientType').value, stage: 0
-            });
-            renderInvoiceList();
-            updateInvoiceStats();
-            showToast('Invoice added!');
-        }
-
-        function renderInvoiceList() {
-            const list = document.getElementById('invoiceList');
-            document.getElementById('queue-count').textContent = invoices.length + ' invoices';
-            if (invoices.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No invoices</p></div>';
-                return;
-            }
-            const stages = ['Sent', 'Friendly', 'Follow-up', 'Final'];
-            const colors = ['', 'tag-primary', 'tag-warning', 'tag-danger'];
-            list.innerHTML = invoices.map(inv =>
-                '<div class="invoice-item ' + (currentInvoice?.id === inv.id ? 'selected' : '') + '" onclick="selectInvoice(' + inv.id + ')">' +
-                '<div class="invoice-info"><div class="client">' + inv.client + '</div>' +
-                '<div class="details">$' + inv.amount.toLocaleString() + ' • Due: ' + inv.dueDate + '</div></div>' +
-                '<span class="tag ' + colors[inv.stage] + '">' + stages[inv.stage] + '</span></div>'
-            ).join('');
-        }
-
-        function selectInvoice(id) {
-            currentInvoice = invoices.find(i => i.id === id);
-            document.getElementById('nudge-info').textContent = currentInvoice.client;
-            renderInvoiceList();
-        }
-
-        function showNudge(days) {
-            if (!currentInvoice) { showToast('Select an invoice first'); return; }
-            const name = currentInvoice.client.split(' ')[0];
-            const templates = {
-                0: { subject: 'Friendly Reminder: Invoice Due Today', tone: 'friendly', body: 'This is a friendly reminder that Invoice for $' + currentInvoice.amount.toLocaleString() + ' is due today.\n\n[Pay Now Button]\n\nThank you for your business!' },
-                7: { subject: 'Quick Follow-up: Invoice Payment', tone: 'followup', body: 'Following up on Invoice for $' + currentInvoice.amount.toLocaleString() + ', now 7 days past due.\n\n[Pay Now Button]\n\nPlease let me know if you have any questions.' },
-                14: { subject: '⚠️ Action Required: Invoice Overdue', tone: 'firm', body: 'Invoice for $' + currentInvoice.amount.toLocaleString() + ' is now 14 days overdue.\n\n[Pay Now Button]\n\nIf not received within 5 days, services will be paused.' },
-                30: { subject: '🚨 Final Notice: Payment Required', tone: 'final', body: 'FINAL NOTICE: Invoice for $' + currentInvoice.amount.toLocaleString() + ' is 30 days overdue.\n\n[Pay Now Button]\n\nAccount will be suspended in 48 hours.' }
-            };
-            const msg = templates[days] || templates[7];
-            currentInvoice.stage = days === 0 ? 1 : days === 7 ? 2 : days === 14 ? 3 : 4;
-            renderInvoiceList();
-
-            document.getElementById('nudgeOutput').textContent = 
-                'TO: ' + currentInvoice.client + '\nSUBJECT: ' + msg.subject + '\nTONE: ' + msg.tone.toUpperCase() + '\n\n─────────────────────────────────────\n\nHi ' + name + ',\n\n' + msg.body + '\n\nBest regards,\n[Your Name]';
-            showToast('Reminder generated!');
-        }
-
-        function updateInvoiceStats() {
-            document.getElementById('invoice-total').textContent = '$' + invoices.reduce((s, i) => s + i.amount, 0).toLocaleString();
-            document.getElementById('invoice-count-display').textContent = invoices.length;
-        }
-
-        function sendEmail() { showToast('Email sent! (Demo)'); }
-        function scheduleReminder() { showToast('Reminder scheduled!'); }
-
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // MEETING NOTES
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function extractActionItems() {
-            const transcript = document.getElementById('meetingTranscript').value;
-            if (!transcript) { showToast('Enter a transcript'); return; }
-
-            const owners = ['Sarah', 'John', 'Mike', 'Alex', 'Emma', 'David', 'Lisa', 'Tom'];
-            const lines = transcript.split('\n').filter(l => l.trim());
-            let newItems = [];
-
-            lines.forEach(line => {
-                const clean = line.replace(/^[^:]+:\s*/, '').trim();
-                if (clean.length > 10 && clean.length < 200) {
-                    let owner = owners.find(o => line.toLowerCase().includes(o.toLowerCase())) || 'Unassigned';
-                    let deadline = 'Not set';
-                    const dateMatch = clean.match(/(january|february|march|april|may|june|july|august|september|october|november|december|next week|q[1-4]|friday|monday)/i);
-                    if (dateMatch) deadline = dateMatch[0];
-                    let priority = clean.match(/\b(urgent|asap|immediately|important|critical)\b/i) ? 'High' : 'Low';
-                    newItems.push({ id: Date.now() + Math.random(), task: clean, owner, deadline, priority, completed: false });
-                }
-            });
-
-            actionItems = [...actionItems, ...newItems];
-            renderActionItems();
-            document.getElementById('meeting-count').textContent = actionItems.length;
-            showToast('Extracted ' + newItems.length + ' items!');
-        }
-
-        function renderActionItems() {
-            const container = document.getElementById('actionList');
-            const pending = actionItems.filter(a => !a.completed).length;
-            document.getElementById('action-count').textContent = pending + ' pending';
-            document.getElementById('meeting-completed').textContent = actionItems.length - pending;
-            document.getElementById('actionButtons').style.display = actionItems.length > 0 ? 'flex' : 'none';
-
-            if (actionItems.length === 0) {
-                container.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>No action items</p></div>';
-                return;
-            }
-            container.innerHTML = actionItems.map(item =>
-                '<div class="action-item ' + (item.completed ? 'completed' : '') + '" onclick="toggleAction(' + item.id + ')">' +
-                '<div class="action-checkbox">' + (item.completed ? '✓' : '') + '</div>' +
-                '<div class="action-content"><div class="task-text">' + item.task + '</div>' +
-                '<div class="task-meta"><span>👤 ' + item.owner + '</span><span>📅 ' + item.deadline + '</span>' +
-                '<span class="tag ' + (item.priority === 'High' ? 'tag-danger' : 'tag-primary') + '">' + item.priority + '</span></div></div></div>'
-            ).join('');
-        }
-
-        function toggleAction(id) {
-            const item = actionItems.find(a => a.id == id);
-            if (item) item.completed = !item.completed;
-            renderActionItems();
-        }
-
-        function sortActions(by) {
-            if (by === 'owner') actionItems.sort((a, b) => a.owner.localeCompare(b.owner));
-            else if (by === 'priority') { const o = { High: 0, Medium: 1, Low: 2 }; actionItems.sort((a, b) => o[a.priority] - o[b.priority]); }
-            else actionItems.sort((a, b) => (a.deadline > b.deadline ? 1 : -1));
-            renderActionItems();
-        }
-
-        function clearActions() { actionItems = []; renderActionItems(); showToast('Cleared'); }
-        function copyActions() { navigator.clipboard.writeText(actionItems.map(a => '[' + (a.completed ? 'x' : ' ') + '] ' + a.task + ' (' + a.owner + ')').join('\n')); showToast('Copied!'); }
-        function exportActionsCSV() { downloadFile('action-items.csv', 'Task,Owner,Deadline,Priority,Status\n' + actionItems.map(a => '"' + a.task + '","' + a.owner + '","' + a.deadline + '","' + a.priority + '","' + (a.completed ? 'Done' : 'Pending') + '"').join('\n')); showToast('CSV exported!'); }
-        function createReminders() { showToast('Reminders created!'); }
-
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // PAYMENT RECOVERY
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function generateRecoveryEmail() {
-            const name = document.getElementById('paymentName').value || 'Customer';
-            const plan = document.getElementById('paymentPlan').value;
-            const attempt = document.getElementById('paymentAttempt').value;
-            const plans = { starter: '$29/mo', pro: '$79/mo', business: '$149/mo', enterprise: '$299/mo' };
-
-            const emails = {
-                1: { subject: "Payment didn't go through 💳", header: 'First Attempt', body: 'We tried to charge your card for ' + plans[plan] + ' but the payment failed.\n\nPlease update your payment method:\n\n[Update Payment Method]\n\nAccount will not be interrupted for 5 days.' },
-                2: { subject: '⚠️ Action Required: Payment failed again', header: 'Second Attempt', body: 'Payment for ' + plans[plan] + ' failed again.\n\n[Update Payment Now]\n\nAccount will be paused in 3 days.' },
-                3: { subject: '🚨 Final Warning: Account will be suspended', header: 'Final Attempt', body: 'FINAL NOTICE: ' + plans[plan] + ' payment failed.\n\n[SAVE MY ACCOUNT]\n\nAccount will be suspended in 24 hours.\n\nYou will lose: data, premium features, support.' }
-            };
-
-            const msg = emails[attempt];
-            document.getElementById('recovery-stage').textContent = msg.header;
-            document.getElementById('recoveryOutput').textContent = 'TO: ' + (document.getElementById('paymentEmail').value || 'customer@example.com') + '\nSUBJECT: ' + msg.subject + '\nSTATUS: ' + msg.header + '\n\n─────────────────────────────────────\n\nHi ' + name + ',\n\n' + msg.body + '\n\n─────────────────────────────────────\n\n📊 Recovery Rate: Up to 85%';
-            document.getElementById('recoveryActions').style.display = 'flex';
-            showToast('Recovery email generated!');
-        }
-
-        function switchEmailTone(tone) { generateRecoveryEmail(); }
-        function sendRecovery() { document.getElementById('recovery-count').textContent = parseInt(document.getElementById('recovery-count').textContent) + 1; showToast('Email sent!'); }
-
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // CLIENT PORTAL
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function generatePortal() {
-            const name = document.getElementById('portalName').value || 'Your Agency';
-            const color = document.getElementById('portalColor').value;
-
-            document.querySelector('.portal-logo').style.background = color;
-            document.querySelector('.portal-name').textContent = name;
-
-            const widgets = document.getElementById('portalWidgets');
-            let html = '';
-            if (document.getElementById('featureFiles').checked) html += '<div class="portal-widget"><h4>Files</h4><div class="value">0</div></div>';
-            if (document.getElementById('featureProjects').checked) html += '<div class="portal-widget"><h4>Projects</h4><div class="value">0</div></div>';
-            if (document.getElementById('featureApprovals').checked) html += '<div class="portal-widget"><h4>Approvals</h4><div class="value">0</div></div>';
-            if (document.getElementById('featureInvoicing').checked) html += '<div class="portal-widget"><h4>Invoices</h4><div class="value">0</div></div>';
-            if (document.getElementById('featureChat').checked) html += '<div class="portal-widget"><h4>Messages</h4><div class="value">0</div></div>';
-            if (document.getElementById('featureAnalytics').checked) html += '<div class="portal-widget"><h4>Analytics</h4><div class="value">0</div></div>';
-            widgets.innerHTML = html || '<p style="color:var(--text-muted)">Select features</p>';
-
-            document.getElementById('portal-count').textContent = parseInt(document.getElementById('portal-count').textContent) + 1;
-            showToast('Portal generated!');
-        }
-
-        function copyPortalCode() {
-            const name = document.getElementById('portalName').value || 'Agency';
-            const color = document.getElementById('portalColor').value;
-            navigator.clipboard.writeText('Portal: ' + name + '\nColor: ' + color + '\nFeatures: File Sharing, Project Tracking, Approvals');
-            showToast('Code copied!');
-        }
-        function deployPortal() { showToast('Portal deployed! (Demo)'); }
-
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // PROPOSAL GENERATOR
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function generateProposal() {
-            const client = document.getElementById('proposalClient').value || 'Client';
-            const service = document.getElementById('proposalService').value;
-            const budget = parseInt(document.getElementById('proposalBudget').value) || 5000;
-            const timeline = parseInt(document.getElementById('proposalTimeline').value) || 8;
-            const company = document.getElementById('proposalCompany').value || 'Your Company';
-            const deliverablesText = document.getElementById('proposalDeliverables').value;
-
-            const services = {
-                web: { name: 'Website Development', items: ['Custom website design', 'Responsive development', 'SEO optimization', '3 months support'] },
-                marketing: { name: 'Digital Marketing', items: ['SEO audit & strategy', 'Content calendar (12 posts)', 'Monthly reporting', 'Social media management'] },
-                branding: { name: 'Branding & Design', items: ['Logo design (3 concepts)', 'Brand guidelines', 'Business card design', 'Social media templates'] },
-                consulting: { name: 'Consulting Services', items: ['Strategy session (4 hrs/month)', 'Implementation roadmap', 'Weekly check-ins', 'Email support'] },
-                app: { name: 'App Development', items: ['Native iOS & Android', 'UI/UX design', 'Backend development', 'App store submission'] },
-                seo: { name: 'SEO Services', items: ['Technical SEO audit', 'Keyword research (50 terms)', 'On-page optimization', 'Monthly reporting'] }
-            };
-
-            const svc = services[service];
-            const deposit = Math.round(budget * 0.5);
-            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            const deliverables = deliverablesText ? deliverablesText.split('\n').filter(d => d.trim()) : svc.items;
-
-            document.getElementById('proposalPreview').innerHTML = 
-                '<h1>Project Proposal</h1><div class="subtitle">For ' + client + ' • ' + today + '</div>' +
-                '<div class="section"><h2>Project Overview</h2><p>Professional ' + svc.name.toLowerCase() + ' services tailored to your needs.</p></div>' +
-                '<div class="section"><h2>Deliverables</h2><ul>' + deliverables.map(d => '<li>' + d + '</li>').join('') + '</ul></div>' +
-                '<div class="section"><h2>Timeline</h2><p>' + timeline + ' weeks</p></div>' +
-                '<div class="section"><h2>Investment</h2><div class="price">$' + budget.toLocaleString() + '</div><p style="font-size:0.85rem;color:#666">Deposit: $' + deposit.toLocaleString() + ' (50%) • Balance on completion</p></div>' +
-                '<div class="signature">Client Signature: ___________________ Date: ___________<br><br>' + company + ': ___________________</div>';
-
-            document.getElementById('proposal-count').textContent = parseInt(document.getElementById('proposal-count').textContent) + 1;
-            document.getElementById('proposal-status').textContent = 'Ready';
-            showToast('Proposal generated!');
-        }
-
-        function copyProposal() { navigator.clipboard.writeText(document.getElementById('proposalPreview').innerText); showToast('Copied!'); }
-        function sendProposal() { showToast('Proposal sent! (Demo)'); }
-
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // JOB BOARD
-        // ═══════════════════════════════════════════════════════════════════════════════
-        function createJobPosting() {
-            const category = document.getElementById('jobCategory').value;
-            const title = document.getElementById('jobTitle').value || 'Job Title';
-            const company = document.getElementById('jobCompany').value || 'Company';
-            const salary = document.getElementById('jobSalary').value || '$80-120k';
-            const location = document.getElementById('jobLocation').value;
-            const skills = document.getElementById('jobSkills').value || 'Skills';
-
-            const categories = { webflow: { icon: '🌊', name: 'Webflow' }, framer: { icon: '🎨', name: 'Framer' }, bubble: { icon: '🫧', name: 'No-Code' }, web3: { icon: '⛓️', name: 'Web3' }, ai: { icon: '🤖', name: 'AI/ML' }, react: { icon: '⚛️', name: 'React' }, node: { icon: '🟢', name: 'Node.js' } };
-            const locations = { remote: '🌍 Remote (Worldwide)', usa: '🇺🇸 Remote (USA)', europe: '🇪🇺 Remote (Europe)', onsite: '📍 On-site' };
-
-            const cat = categories[category];
-            jobPostings.push({ id: Date.now(), category: cat.name, icon: cat.icon, title, company, salary, location: locations[location], skills: skills.split(',').map(s => s.trim()), date: new Date().toLocaleDateString() });
-
-            renderJobOutput();
-            document.getElementById('job-board-count').textContent = jobPostings.length;
-            document.getElementById('job-count-display').textContent = jobPostings.length + ' postings';
-            showToast('Job posting created!');
-        }
-
-        function renderJobOutput() {
-            const output = document.getElementById('jobOutput');
-            document.getElementById('jobActions').style.display = jobPostings.length > 0 ? 'flex' : 'none';
-
-            if (jobPostings.length === 0) {
-                output.innerHTML = '<div class="empty-state"><div class="icon">💼</div><p>Create a job posting</p></div>';
-                return;
-            }
-
-            output.innerHTML = jobPostings.map(job =>
-                '═══════════════════════════════════════════════════════════════\n' +
-                job.icon + ' ' + job.title.toUpperCase() + '\n' +
-                '═══════════════════════════════════════════════════════════════\n\n' +
-                '🏢 Company: ' + job.company + '\n' +
-                '💰 Salary: ' + job.salary + '\n' +
-                '📍 Location: ' + job.location + '\n' +
-                '📅 Posted: ' + job.date + '\n' +
-                '🛠️ Skills: ' + job.skills.join(', ') + '\n\n───────────────────────────────────────────────────────────────'
-            ).join('\n');
-        }
-
-        function filterJobs(filter) { showToast('Filtered: ' + filter); }
-        function copyJobBoard() { copyOutput('jobOutput'); }
-        function publishJobBoard() { showToast('Job board published! (Demo)'); }
-
-        // ═══════════════════════════════════════════════════════════════════════════════
-        // INIT
-        // ═══════════════════════════════════════════════════════════════════════════════
-        document.addEventListener('DOMContentLoaded', () => {
-            const today = new Date().toISOString().split('T')[0];
-            const dueDate = new Date(Date.now() + 30 * 864e5).toISOString().split('T')[0];
-            document.getElementById('invoiceDate').value = today;
-            document.getElementById('invoiceDueDate').value = dueDate;
-            document.getElementById('portalColor').addEventListener('input', (e) => { document.getElementById('portalColorHex').value = e.target.value; });
-        });
     </script>
 </body>
 </html>
